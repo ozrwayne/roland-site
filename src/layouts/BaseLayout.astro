@@ -1,0 +1,29 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  lang?: string;
+}
+
+const { title, description, image, lang = 'zh' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <SEO title={title} description={description} image={image} />
+  </head>
+  <body class="min-h-screen flex flex-col bg-primary text-text-primary">
+    <Header lang={lang} />
+    <main class="flex-grow pt-20">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

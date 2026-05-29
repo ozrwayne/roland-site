@@ -1,0 +1,75 @@
+---
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'zh' } = Astro.props;
+const t = useTranslations(lang);
+const currentPath = Astro.url.pathname;
+
+const navLinks = lang === 'zh'
+  ? [
+      { text: '服务', href: getLocalizedPath('/services', lang) },
+      { text: '高校合作', href: getLocalizedPath('/university', lang) },
+      { text: '博客', href: getLocalizedPath('/blog', lang) },
+      { text: '联系', href: getLocalizedPath('/contact', lang) },
+    ]
+  : [
+      { text: t.nav.about, href: getLocalizedPath('/about', lang) },
+      { text: t.nav.research, href: getLocalizedPath('/research', lang) },
+      { text: t.nav.services, href: getLocalizedPath('/services', lang) },
+      { text: t.nav.blog, href: getLocalizedPath('/blog', lang) },
+      { text: t.nav.contact, href: getLocalizedPath('/contact', lang) },
+    ];
+---
+
+<header class="fixed top-0 w-full z-50 bg-primary/80 backdrop-blur-md border-b border-border">
+  <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href={getLocalizedPath('/', lang)} class="font-serif text-xl text-accent tracking-wide">
+      Roland Wayne
+    </a>
+
+    <ul class="hidden md:flex items-center gap-8">
+      {navLinks.map(link => (
+        <li>
+          <a
+            href={link.href}
+            class={`text-sm tracking-wider uppercase transition-colors duration-300 ${
+              currentPath.startsWith(link.href) && link.href !== '/'
+                ? 'text-accent'
+                : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            {link.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <button id="mobile-menu-btn" class="md:hidden text-text-secondary" aria-label="Toggle menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </nav>
+
+  <div id="mobile-menu" class="hidden md:hidden bg-secondary border-b border-border">
+    <ul class="px-6 py-4 space-y-4">
+      {navLinks.map(link => (
+        <li>
+          <a href={link.href} class="block text-sm tracking-wider uppercase text-text-secondary hover:text-accent transition-colors">
+            {link.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+</script>

@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="首页"
+  description="Roland Wayne — 卫生经济学博士候选人，独立写作者，AI 系统实践者。用跨学科思维拆解复杂问题。"
+  lang="zh"
+>
+  <!-- Hero -->
+  <section class="min-h-[90vh] flex items-center">
+    <div class="max-w-6xl mx-auto px-6 py-20">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="text-accent uppercase tracking-[0.3em] text-sm mb-4">
+            研究者 · 系统构建者 · 跨界领域思考者
+          </p>
+          <h1 class="font-serif text-4xl md:text-6xl leading-tight mb-6">
+            用跨学科思维<br />
+            <span class="text-accent">拆解复杂问题</span><br />
+          </h1>
+          <p class="text-text-secondary text-lg leading-relaxed mb-8 max-w-lg">
+            昆士兰大学医学院博士候选人，AI 领域内容创作者。在 Springfield 研究低钠盐替代品的心血管疾病预防经济学，同时探索 AI 如何重塑研究与创作。
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/services" class="px-6 py-3 bg-accent text-primary font-medium text-sm uppercase tracking-wider hover:bg-accent-hover transition-colors text-center">
+              阅读文章
+            </a>
+            <a href="/research" class="px-6 py-3 border border-border text-text-secondary text-sm uppercase tracking-wider hover:border-accent hover:text-accent transition-colors text-center">
+              了解研究
+            </a>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <div class="aspect-[3/4] overflow-hidden border border-border">
+            <img src="/profile.jpg" alt="Roland Wayne" class="w-full h-full object-cover object-top" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Three Pillars -->
+  <section class="bg-secondary py-20">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="p-8 border border-border hover:border-accent/30 transition-colors">
+          <div class="text-accent text-3xl font-serif mb-4">01</div>
+          <h3 class="text-lg font-medium mb-3">学术研究</h3>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            昆士兰大学医学院博士候选人，在 Springfield Healthy Hearts 项目中研究低钠盐替代品在心血管疾病预防中的健康经济学，关注政策如何真正落地。
+          </p>
+        </div>
+        <div class="p-8 border border-border hover:border-accent/30 transition-colors">
+          <div class="text-accent text-3xl font-serif mb-4">02</div>
+          <h3 class="text-lg font-medium mb-3">独立写作</h3>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            写宏观经济、AI 趋势、决策哲学。不贩卖焦虑，不追热点，只写经过深度思考的东西。
+          </p>
+        </div>
+        <div class="p-8 border border-border hover:border-accent/30 transition-colors">
+          <div class="text-accent text-3xl font-serif mb-4">03</div>
+          <h3 class="text-lg font-medium mb-3">系统构建</h3>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            用 AI 构建个人数字分身系统，实践自动化工作流、知识管理和投资决策框架。相信复利，相信系统。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      <h2 class="font-serif text-3xl mb-6">想聊聊？</h2>
+      <p class="text-text-secondary mb-8 text-lg">
+        无论是学术合作、内容探讨，还是对 AI 系统构建感兴趣，欢迎联系。
+      </p>
+      <a href="/contact" class="inline-block px-8 py-4 bg-accent text-primary font-medium text-sm uppercase tracking-wider hover:bg-accent-hover transition-colors">
+        联系我
+      </a>
+    </div>
+  </section>
+</BaseLayout>

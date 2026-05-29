@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('zh');
+---
+
+<BaseLayout title="关于" description="了解 Roland Wayne 从康复治疗到健康经济学、实施科学和教育咨询的旅程。" lang="zh">
+  <section class="pt-8 pb-16 px-6">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-sm font-medium tracking-widest uppercase text-accent mb-4">{t.about.eyebrow}</p>
+      <h1 class="font-serif text-4xl md:text-5xl text-text-primary leading-tight mb-12">{t.about.title}</h1>
+      <div class="space-y-6 text-text-secondary text-lg leading-relaxed">
+        <p>{t.about.p1}</p>
+        <p>{t.about.p2}</p>
+        <p>{t.about.p3}</p>
+        <p>{t.about.p4}</p>
+      </div>
+    </div>
+  </section>
+  <div class="max-w-3xl mx-auto px-6"><hr class="border-border" /></div>
+  <section class="py-16 px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="font-serif text-2xl text-text-primary mb-10">{t.about.milestones}</h2>
+      <div class="space-y-0">
+        <div class="flex gap-8 pb-10 relative">
+          <div class="flex flex-col items-center">
+            <div class="w-3 h-3 rounded-full bg-accent mt-1 shrink-0"></div>
+            <div class="w-px flex-1 bg-border mt-2"></div>
+          </div>
+          <div class="pb-2">
+            <span class="text-xs font-medium tracking-widest uppercase text-accent">{t.about.m1.year}</span>
+            <h3 class="font-serif text-xl text-text-primary mt-1 mb-2">{t.about.m1.title}</h3>
+            <p class="text-text-secondary leading-relaxed">{t.about.m1.desc}</p>
+          </div>
+        </div>
+        <div class="flex gap-8 pb-10 relative">
+          <div class="flex flex-col items-center">
+            <div class="w-3 h-3 rounded-full bg-accent mt-1 shrink-0"></div>
+            <div class="w-px flex-1 bg-border mt-2"></div>
+          </div>
+          <div class="pb-2">
+            <span class="text-xs font-medium tracking-widest uppercase text-accent">{t.about.m2.year}</span>
+            <h3 class="font-serif text-xl text-text-primary mt-1 mb-2">{t.about.m2.title}</h3>
+            <p class="text-text-secondary leading-relaxed">{t.about.m2.desc}</p>
+          </div>
+        </div>
+        <div class="flex gap-8">
+          <div class="flex flex-col items-center">
+            <div class="w-3 h-3 rounded-full bg-accent mt-1 shrink-0"></div>
+          </div>
+          <div>
+            <span class="text-xs font-medium tracking-widest uppercase text-accent">{t.about.m3.year}</span>
+            <h3 class="font-serif text-xl text-text-primary mt-1 mb-2">{t.about.m3.title}</h3>
+            <p class="text-text-secondary leading-relaxed">{t.about.m3.desc}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

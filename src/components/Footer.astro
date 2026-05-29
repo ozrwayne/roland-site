@@ -1,0 +1,30 @@
+---
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'zh' } = Astro.props;
+const t = useTranslations(lang);
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-border bg-secondary">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+      <div>
+        <p class="font-serif text-accent text-lg">Roland Wayne</p>
+        <p class="text-text-muted text-sm mt-1">{t.footer.title}</p>
+      </div>
+      <div class="flex gap-6">
+        <a href="mailto:contact@rolandwayne.com" class="text-text-secondary hover:text-accent transition-colors text-sm">Email</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener" class="text-text-secondary hover:text-accent transition-colors text-sm">LinkedIn</a>
+        <a href="https://scholar.google.com" target="_blank" rel="noopener" class="text-text-secondary hover:text-accent transition-colors text-sm">Google Scholar</a>
+      </div>
+    </div>
+    <div class="mt-8 pt-6 border-t border-border text-center">
+      <p class="text-text-muted text-xs">&copy; {currentYear} {t.footer.copyright}</p>
+    </div>
+  </div>
+</footer>

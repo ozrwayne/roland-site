@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="高校合作" description="国际医学教育合作伙伴 - Roland Wayne" lang="zh">
+  <section class="pt-32 pb-20 bg-gradient-to-b from-secondary to-primary">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <p class="text-accent uppercase tracking-[0.3em] text-sm mb-4">国际医学教育合作伙伴</p>
+      <h1 class="font-serif text-4xl md:text-5xl mb-6">高校合作</h1>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="grid md:grid-cols-3 gap-12 items-start">
+        <div class="md:col-span-1">
+          <img src="/profile.jpg" alt="Roland Wayne" class="w-full aspect-[3/4] object-cover rounded-lg shadow-lg" />
+        </div>
+        <div class="md:col-span-2">
+          <h2 class="font-serif text-2xl mb-6">个人简介</h2>
+          <p class="text-text-secondary leading-relaxed mb-8">
+            Roland专注于心血管疾病、糖尿病等慢性病的卫生经济研究与临床数据建模，同时也是医学领域BSS服务体系搭建者、操盘者与推动者。Roland已经在医学升学赛道深耕多年，目前已经建立非常完善的个人IP系统。
+          </p>
+          <div class="space-y-3">
+            {[
+              '澳大利亚昆士兰大学医学院博士候选人（全额奖学金）',
+              '澳大利亚昆士兰大学斯普林菲尔德健康福祉研究中心成员',
+              '邦德大学医学院临床模拟教学团队成员',
+              '昆士兰大学卫生经济学硕士',
+              '澳大利亚潮汕青年会执行会长',
+              '澳大利亚潮汕同乡会副会长',
+            ].map((item) => (
+              <div class="flex items-start gap-3">
+                <span class="text-accent mt-1">▸</span>
+                <span class="text-text-secondary">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-secondary">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="font-serif text-2xl text-center mb-12">核心成就</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {[
+          { value: '600+', title: '全球顶尖高校', subtitle: '录取案例' },
+          { value: '3+', title: '连续数年', subtitle: '香港/英国/澳洲医学院录取' },
+          { value: '6+', title: '服务时长', subtitle: '年行业经验' },
+          { value: '30万+', title: '内部培训', subtitle: '字培训资料' },
+        ].map((item) => (
+          <div class="text-center">
+            <div class="font-serif text-4xl md:text-5xl text-accent mb-2">{item.value}</div>
+            <div class="font-medium mb-1">{item.title}</div>
+            <div class="text-text-muted text-sm">{item.subtitle}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="font-serif text-2xl text-center mb-12">工作职责</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        {[
+          { title: '团队管理', desc: '全面负责导师团队的组建、管理与人才发展机制设计' },
+          { title: '体系搭建', desc: '自主开发服务流程标准化体系和智能化文书评价系统' },
+          { title: '项目统筹', desc: '统筹管理医学本硕博申请全流程' },
+          { title: '知识建设', desc: '主导内部知识库建设与应用场景课程开发' },
+          { title: 'AI科研体系构建', desc: '为高校和科研机构搭建AI驱动的科研工作流与知识管理系统' },
+          { title: 'AI科研教学', desc: '面向医学领域的AI工具应用培训，手把手带团队跑通真实科研场景' },
+          { title: 'AI医学研究', desc: '将AI技术应用于医学研究全流程，包括文献检索、数据分析、论文写作等' },
+        ].map((item) => (
+          <div class="p-6 border border-border">
+            <h3 class="font-medium mb-2">{item.title}</h3>
+            <p class="text-text-secondary text-sm">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-secondary">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="font-serif text-2xl text-center mb-8">专业领域</h2>
+      <div class="flex flex-wrap justify-center gap-3">
+        {[
+          '卫生经济学研究',
+          '临床数据建模',
+          '医学升学咨询',
+          '项目管理与团队运营',
+          '中国市场准入咨询',
+          'AI科研体系构建',
+          'AI科研教学',
+          'AI医学研究',
+        ].map((tag) => (
+          <span class="px-4 py-2 border border-accent/30 text-accent">{tag}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="max-w-2xl mx-auto px-6 text-center">
+      <h2 class="font-serif text-2xl mb-4">合作咨询</h2>
+      <p class="text-text-secondary mb-8">欢迎各大海外高等教育机构及私营医疗企业洽谈合作</p>
+      <a href="/contact" class="inline-block px-8 py-4 bg-accent text-primary font-medium text-sm uppercase tracking-wider hover:bg-accent-hover transition-colors">
+        联系我
+      </a>
+    </div>
+  </section>
+</BaseLayout>

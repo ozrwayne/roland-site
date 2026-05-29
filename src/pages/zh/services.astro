@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('zh');
+---
+
+<BaseLayout title="服务" description="Wayne Insight Spring — 为家庭提供高端国际医学教育咨询服务。" lang="zh">
+  <section class="py-20">
+    <div class="max-w-4xl mx-auto px-6">
+      <p class="text-accent uppercase tracking-[0.3em] text-sm mb-4">{t.services.eyebrow}</p>
+      <h1 class="font-serif text-4xl md:text-5xl text-text-primary mb-6">{t.services.title}</h1>
+      <p class="text-text-secondary text-lg mb-16 max-w-2xl">{t.services.subtitle}</p>
+
+      <div class="bg-secondary border border-border p-8 mb-16">
+        <p class="font-serif text-accent text-lg mb-4">{t.services.philosophy}</p>
+        <p class="text-text-secondary leading-relaxed">{t.services.philosophyDesc}</p>
+      </div>
+
+      <div class="space-y-8 mb-16">
+        <div class="p-8 border border-border hover:border-accent/40 transition-colors">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+            <h3 class="text-xl font-medium text-text-primary">{t.services.s1.title}</h3>
+            <span class="text-accent font-serif text-lg">{t.services.s1.tier}</span>
+          </div>
+          <p class="text-text-secondary text-sm leading-relaxed mb-4">{t.services.s1.desc}</p>
+          <div class="flex flex-wrap gap-2">
+            {t.services.s1.tags.map((tag: string) => (
+              <span class="text-xs text-text-muted border border-border px-2 py-1">{tag}</span>
+            ))}
+          </div>
+        </div>
+        <div class="p-8 border border-border hover:border-accent/40 transition-colors">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+            <h3 class="text-xl font-medium text-text-primary">{t.services.s2.title}</h3>
+            <span class="text-accent font-serif text-lg">{t.services.s2.tier}</span>
+          </div>
+          <p class="text-text-secondary text-sm leading-relaxed mb-4">{t.services.s2.desc}</p>
+          <div class="flex flex-wrap gap-2">
+            {t.services.s2.tags.map((tag: string) => (
+              <span class="text-xs text-text-muted border border-border px-2 py-1">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center py-12">
+        <p class="text-text-secondary mb-6">{t.services.ctaText}</p>
+        <a href="/zh/contact" class="inline-block px-8 py-4 bg-accent text-white font-medium text-sm uppercase tracking-wider hover:bg-accent-hover transition-colors">{t.services.ctaButton}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

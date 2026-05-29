@@ -1,0 +1,45 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags?: string[];
+}
+
+const { title, description, pubDate, tags = [] } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="py-20">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="mb-12">
+        <time class="text-accent text-xs uppercase tracking-wider">
+          {pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        <h1 class="font-serif text-4xl md:text-5xl mt-4 mb-6 text-text-primary">{title}</h1>
+        {tags.length > 0 && (
+          <div class="flex gap-2">
+            {tags.map(tag => (
+              <span class="text-xs text-text-muted border border-border px-2 py-1">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+      <div class="prose prose-lg max-w-none
+        prose-headings:font-serif prose-headings:text-text-primary
+        prose-p:text-text-secondary prose-a:text-accent hover:prose-a:text-accent-hover
+        prose-strong:text-text-primary prose-code:text-accent
+        prose-blockquote:border-accent prose-blockquote:text-text-secondary
+        prose-hr:border-border">
+        <slot />
+      </div>
+      <div class="mt-16 pt-8 border-t border-border">
+        <a href="/blog" class="text-accent text-sm uppercase tracking-wider hover:text-accent-hover transition-colors">
+          ← Back to all posts
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
