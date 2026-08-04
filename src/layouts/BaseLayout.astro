@@ -18,12 +18,41 @@ const { title, description, image, lang = 'zh' } = Astro.props;
 <html lang={lang}>
   <head>
     <SEO title={title} description={description} image={image} />
+    <link rel="stylesheet" href="/vendor/phosphor/style.css" />
   </head>
-  <body class="min-h-screen flex flex-col bg-primary text-text-primary">
-    <Header lang={lang} />
-    <main class="flex-grow pt-20">
-      <slot />
-    </main>
-    <Footer lang={lang} />
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <Header />
+    <div class="site-content">
+      <main id="main-content" class="site-main">
+        <slot />
+      </main>
+      <Footer lang={lang} />
+    </div>
   </body>
 </html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: calc(var(--sidebar-width) + 1rem);
+    z-index: 100;
+    padding: 0.65rem 0.9rem;
+    background: #ffffff;
+    color: var(--wis-navy);
+    border: 1px solid var(--wis-line);
+    transform: translateY(-180%);
+    transition: transform 160ms ease;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 899px) {
+    .skip-link {
+      left: 1rem;
+    }
+  }
+</style>

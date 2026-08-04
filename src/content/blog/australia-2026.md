@@ -3,6 +3,8 @@ title: "AI、矿产与澳洲经济：2026，澳洲能迎来新国运吗？"
 description: "在 AI 重塑全球价值链的背景下，澳大利亚的位置在哪里？本文用经济学分析框架，探讨澳洲的资源禀赋、地缘优势与转型挑战。"
 pubDate: 2026-02-25
 tags: ["澳大利亚", "经济", "AI", "关键矿产", "地缘政治"]
+cover: "/images/blog/australia-2026/cover.jpg"
+coverAlt: "澳大利亚关键矿产分布图"
 draft: false
 ---
 

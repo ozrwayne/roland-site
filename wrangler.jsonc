@@ -12,5 +12,10 @@
 	},
 	"observability": {
     "enabled": true
-  }
+  },
+	"send_email": [
+		{
+			"name": "CONTACT_EMAIL"
+		}
+	]
 }

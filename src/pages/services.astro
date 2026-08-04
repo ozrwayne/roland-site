@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { useTranslations } from '../i18n/utils';
 
 const t = useTranslations('zh');
@@ -10,14 +11,14 @@ const t = useTranslations('zh');
   description="Wayne Insight Spring —— 国际医学教育咨询服务。"
   lang="zh"
 >
+  <PageHero
+    kicker="Services / Consulting"
+    title="服务"
+    subtitle={t.services.subtitle}
+  />
+
   <section class="py-20">
-    <div class="max-w-4xl mx-auto px-6">
-
-      <!-- Eyebrow + Title + Subtitle -->
-      <p class="text-accent uppercase tracking-[0.3em] text-sm mb-4">{t.services.eyebrow}</p>
-      <h1 class="font-serif text-4xl md:text-5xl text-text-primary mb-6">{t.services.title}</h1>
-      <p class="text-text-secondary text-lg mb-16 max-w-2xl">{t.services.subtitle}</p>
-
+    <div class="services-shell">
       <!-- Philosophy -->
       <div class="bg-secondary border border-border p-8 mb-16">
         <p class="font-serif text-accent text-lg mb-4">{t.services.philosophy}</p>
@@ -68,3 +69,11 @@ const t = useTranslations('zh');
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .services-shell {
+    width: min(100%, 68rem);
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 5vw, 5rem);
+  }
+</style>

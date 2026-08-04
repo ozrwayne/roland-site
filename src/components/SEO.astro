@@ -9,109 +9,92 @@ interface Props {
 const {
   title,
   description,
-  image = '/images/og-image.jpg',
+  image = '/images/blog/welcome/cover.png',
   canonicalURL = Astro.site
     ? new URL(Astro.url.pathname, Astro.site).href
     : Astro.url.href,
 } = Astro.props;
 
-const siteName = "Roland Wayne";
+const siteName = 'Roland Wayne';
+const origin = Astro.site ?? Astro.url.origin;
+const absoluteImage = image.startsWith('http') ? image : new URL(image, origin).href;
+
 const personSchema = {
-  "@context": "https://schema.org",
-  "@id": "https://www.rolandwayne.com/#person",
-  "@type": "Person",
-  "name": "Roland Wayne",
-  "alternateName": ["王罗湳", "罗湳", "罗湳Roland"],
-  "givenName": "Roland",
-  "familyName": "Wayne",
-  "email": "mailto:rwayne@wayneinsightspring.com",
-  "url": "https://www.rolandwayne.com",
-  "description": "澳洲昆士蘭大學醫學院全獎博士（醫學經濟學方向）。創辦 Wayne InsightSpring（AI 企業轉型諮詢，主攻中小企業）同 MedFlow（大健康留學）。將醫學經濟學評估方法論應用於 AI 落地與教育路徑設計。",
-  "jobTitle": [
-    "Founder, Wayne InsightSpring",
-    "Founder, MedFlow",
-    "Principal Consultant"
-  ],
-  "hasCredential": {
-    "@type": "EducationalOccupationalCredential",
-    "name": "PhD Candidate, Health Economics",
-    "credentialCategory": "doctoral candidate",
-    "competencyRequired": "Health Economics",
-    "recognizedBy": {
-      "@type": "EducationalOrganization",
-      "name": "University of Queensland Medical School",
-      "url": "https://medicine.uq.edu.au"
-    }
-  },
-  "affiliation": {
-    "@type": "EducationalOrganization",
-    "name": "University of Queensland Medical School",
-    "url": "https://medicine.uq.edu.au"
-  },
-  "award": "Full PhD Scholarship, University of Queensland Medical School",
-  "worksFor": {
-    "@type": "Organization",
-    "@id": "https://wayneinsightspring.com/#organization",
-    "name": "Wayne InsightSpring Limited"
-  },
-  "founder": [
-    {
-      "@type": "Organization",
-      "@id": "https://wayneinsightspring.com/#organization",
-      "name": "Wayne InsightSpring"
+  '@context': 'https://schema.org',
+  '@id': 'https://www.rolandwayne.com/#person',
+  '@type': 'Person',
+  name: 'Roland Wayne',
+  alternateName: ['王罗湳', '罗湳', '罗湳Roland'],
+  givenName: 'Roland',
+  familyName: 'Wayne',
+  email: 'mailto:rwayne@wayneinsightspring.com',
+  url: 'https://www.rolandwayne.com',
+  description: '澳洲昆士蘭大學醫學院全獎博士（醫學經濟學方向）。創辦 Wayne InsightSpring（AI 企業轉型諮詢，主攻中小企業）同 MedFlow（大健康留學）。將醫學經濟學評估方法論應用於 AI 落地與教育路徑設計。',
+  jobTitle: ['Founder, Wayne InsightSpring', 'Founder, MedFlow', 'Principal Consultant'],
+  hasCredential: {
+    '@type': 'EducationalOccupationalCredential',
+    name: 'PhD Candidate, Health Economics',
+    credentialCategory: 'doctoral candidate',
+    competencyRequired: 'Health Economics',
+    recognizedBy: {
+      '@type': 'EducationalOrganization',
+      name: 'University of Queensland Medical School',
+      url: 'https://medicine.uq.edu.au',
     },
-    {
-      "@type": "Organization",
-      "@id": "https://medflowedu.com/#organization",
-      "name": "MedFlow"
-    }
+  },
+  affiliation: {
+    '@type': 'EducationalOrganization',
+    name: 'University of Queensland Medical School',
+    url: 'https://medicine.uq.edu.au',
+  },
+  worksFor: {
+    '@type': 'Organization',
+    '@id': 'https://wayneinsightspring.com/#organization',
+    name: 'Wayne InsightSpring Limited',
+  },
+  sameAs: [
+    'https://x.com/rwayne',
+    'https://www.linkedin.com/in/roland-wayne-b3b179266',
+    'https://orcid.org/0009-0002-4272-5854',
+    'https://scholar.google.com/citations?user=ESmLe1MAAAAJ&hl=en',
   ],
-  "knowsAbout": [
-    "Enterprise AI Transformation / AI 企業轉型",
-    "SME AI Implementation / 中小企業 AI 落地",
-    "AI ROI Assessment / AI 投資回報評估",
-    "Health Economics / 醫學經濟學",
-    "Cost-Effectiveness Analysis / 成本效益分析",
-    "Allied Health Education / 大健康留學",
-    "Australian Medical School Pathways / 澳洲醫學院申請路徑",
-    "Metacognition in AI Adoption / AI 應用中的元認知"
-  ],
-  "sameAs": [
-    "https://x.com/rwayne",
-    "https://www.linkedin.com/in/roland-wayne-b3b179266",
-    "https://orcid.org/0009-0002-4272-5854",
-    "https://scholar.google.com/citations?user=ESmLe1MAAAAJ&hl=en"
-  ],
-  "_identifiers": {
-    "weixin_official_account_name": "罗湳Roland",
-    "comment": "微信公众号无标准 sameAs URL，记在此供 AI Roland / 内容引用使用"
-  }
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://www.rolandwayne.com/#website',
+  name: siteName,
+  url: 'https://www.rolandwayne.com/',
+  inLanguage: ['zh-CN', 'en'],
+  author: { '@id': 'https://www.rolandwayne.com/#person' },
 };
 ---
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0A1F5D" />
+<meta name="color-scheme" content="light" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
 <title>{title} | {siteName}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 
-<!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content={`${title} | ${siteName}`} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={image} />
+<meta property="og:image" content={absoluteImage} />
+<meta property="og:image:alt" content={`${siteName} — ${title}`} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="zh_CN" />
 
-<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={title} />
+<meta name="twitter:title" content={`${title} | ${siteName}`} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={image} />
+<meta name="twitter:image" content={absoluteImage} />
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<script
-  id="schema-roland-person"
-  type="application/ld+json"
-  set:html={JSON.stringify(personSchema)}
-></script>
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<script id="schema-roland-person" type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+<script id="schema-roland-website" type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>

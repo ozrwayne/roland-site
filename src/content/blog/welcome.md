@@ -3,6 +3,9 @@ title: "Welcome — Why This Site Exists"
 description: "An introduction to what you'll find here: research updates, education insights, and reflections on thinking clearly."
 pubDate: 2025-02-21
 tags: ["personal", "introduction"]
+cover: "/images/blog/welcome/cover.png"
+coverAlt: "深蓝入口与冰蓝玻璃结构组成的抽象建筑空间"
+pinned: true
 draft: false
 ---
 

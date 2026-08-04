@@ -3,40 +3,230 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog'))
-  .filter(post => !post.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => {
+    if (a.data.pinned !== b.data.pinned) return a.data.pinned ? -1 : 1;
+    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+  });
+
+const formatter = new Intl.DateTimeFormat('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
 ---
 
-<BaseLayout title="Blog" description="Insights on health science, education consulting, AI research thinking, and decision-making frameworks.">
-  <section class="py-20">
-    <div class="max-w-4xl mx-auto px-6">
-      <p class="text-accent uppercase tracking-[0.3em] text-sm mb-4">Blog</p>
-      <h1 class="font-serif text-4xl md:text-5xl mb-12">Thoughts & Insights</h1>
+<BaseLayout title="文章" description="Roland Wayne 关于宏观经济、AI 趋势、研究方法与决策哲学的全部文章。" lang="zh">
+  <section class="blog-hero">
+    <div class="blog-shell">
+      <p class="blog-kicker">Blog / Archive</p>
+      <h1>文章</h1>
+      <p class="blog-subtitle">Thoughts &amp; Insights</p>
+    </div>
+  </section>
 
+  <section class="blog-list-section" aria-label="全部文章">
+    <div class="blog-shell">
       {posts.length === 0 ? (
-        <p class="text-text-secondary text-lg">Coming soon — stay tuned for new articles.</p>
+        <p class="empty">文章正在整理中。</p>
       ) : (
-        <div class="space-y-8">
-          {posts.map(post => (
-            <a href={`/blog/${post.id}`} class="block group p-6 border border-border hover:border-accent/30 transition-colors">
-              <time class="text-accent text-xs uppercase tracking-wider">
-                {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-              </time>
-              <h2 class="font-serif text-2xl mt-2 mb-3 group-hover:text-accent transition-colors">
-                {post.data.title}
-              </h2>
-              <p class="text-text-secondary text-sm">{post.data.description}</p>
-              {post.data.tags.length > 0 && (
-                <div class="flex gap-2 mt-4">
-                  {post.data.tags.map(tag => (
-                    <span class="text-xs text-text-muted border border-border px-2 py-1">{tag}</span>
-                  ))}
-                </div>
-              )}
-            </a>
+        <ol class="blog-list">
+          {posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}`}>
+                <span class="cover-frame">
+                  <img
+                    src={post.data.cover ?? post.data.image ?? '/images/blog/welcome/cover.png'}
+                    alt={post.data.coverAlt ?? ''}
+                    width="480"
+                    loading="lazy"
+                  />
+                </span>
+                <span class="post-copy">
+                  <span class="meta">
+                    <time datetime={post.data.pubDate.toISOString()}>{formatter.format(post.data.pubDate)}</time>
+                    {post.data.pinned && <span class="pin">置顶</span>}
+                  </span>
+                  <span class="title">{post.data.title}</span>
+                  <span class="description">{post.data.description}</span>
+                  {post.data.tags.length > 0 && (
+                    <span class="tags">
+                      {post.data.tags.map((tag) => <span>{tag}</span>)}
+                    </span>
+                  )}
+                </span>
+                <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+              </a>
+            </li>
           ))}
-        </div>
+        </ol>
       )}
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .blog-shell {
+    width: min(100%, 68rem);
+    margin: 0 auto;
+    padding-inline: clamp(1.5rem, 5vw, 5rem);
+  }
+
+  .blog-hero {
+    padding: clamp(3rem, 5vw, 4.5rem) 0 clamp(2.5rem, 4vw, 3.5rem);
+    background: var(--wis-paper);
+    border-bottom: 1px solid var(--wis-line);
+  }
+
+  .blog-kicker {
+    margin: 0;
+    color: var(--wis-blue);
+    font-size: 0.76rem;
+    font-weight: 650;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .blog-hero h1 {
+    margin: 0.65rem 0 0.55rem;
+    color: var(--wis-navy);
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    font-weight: 680;
+    letter-spacing: -0.055em;
+    line-height: 1;
+  }
+
+  .blog-subtitle {
+    margin: 0;
+    color: var(--wis-copy);
+    font-size: clamp(0.92rem, 1.4vw, 1.05rem);
+    letter-spacing: 0.01em;
+  }
+
+  .blog-list-section {
+    padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(5rem, 8vw, 8rem);
+  }
+
+  .blog-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-list li + li {
+    margin-top: 0;
+  }
+
+  .blog-list a {
+    display: grid;
+    grid-template-columns: clamp(11rem, 24vw, 17rem) minmax(0, 1fr) 1.5rem;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+    padding: 1.6rem 0;
+    color: inherit;
+    border-bottom: 1px solid var(--wis-line);
+    text-decoration: none;
+  }
+
+  .cover-frame {
+    display: flex;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .blog-list img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    background: var(--wis-surface);
+    border: 1px solid var(--wis-line);
+  }
+
+  .post-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--wis-muted);
+    font-size: 0.72rem;
+  }
+
+  .pin {
+    padding: 0.08rem 0.4rem;
+    color: var(--wis-navy);
+    background: var(--wis-ice);
+    font-size: 0.65rem;
+    font-weight: 650;
+  }
+
+  .title {
+    margin-top: 0.5rem;
+    color: var(--wis-navy);
+    font-size: clamp(1.25rem, 2.4vw, 1.85rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    transition: color 150ms ease;
+  }
+
+  .description {
+    margin-top: 0.65rem;
+    color: var(--wis-copy);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+
+  .tags > span {
+    padding: 0.18rem 0.45rem;
+    color: var(--wis-blue);
+    border: 1px solid var(--wis-line);
+    font-size: 0.65rem;
+  }
+
+  .blog-list a > i {
+    color: var(--wis-muted);
+    font-size: 1.25rem;
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .blog-list a:hover .title,
+  .blog-list a:hover > i {
+    color: var(--wis-blue);
+  }
+
+  .blog-list a:hover > i {
+    transform: translate(0.15rem, -0.15rem);
+  }
+
+  .empty {
+    color: var(--wis-copy);
+  }
+
+  @media (max-width: 680px) {
+    .blog-list a {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding-block: 1.8rem;
+    }
+
+    .blog-list a > i {
+      display: none;
+    }
+  }
+</style>

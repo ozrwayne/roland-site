@@ -1,48 +1,133 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap');
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
-  --color-primary: #0A0A0A;
-  --color-secondary: #111111;
-  --color-tertiary: #1A1A1A;
-  --color-accent: #C9A96E;
-  --color-accent-hover: #D4B97D;
-  --color-accent-light: #2A2A2A;
-  --color-border: #2A2A2A;
-  --color-text-primary: #F5F5F5;
-  --color-text-secondary: #A0A0A0;
-  --color-text-muted: #666666;
+  --color-primary: #f7f9fc;
+  --color-secondary: #eef3f9;
+  --color-tertiary: #e4edf7;
+  --color-accent: #0a1f5d;
+  --color-accent-hover: #183b82;
+  --color-accent-light: #dff1f7;
+  --color-border: #d6e1ee;
+  --color-text-primary: #0a1f5d;
+  --color-text-secondary: #536a81;
+  --color-text-muted: #8091a4;
 
-  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
-  --font-serif: 'DM Serif Display', 'Noto Serif SC', Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+:root {
+  --sidebar-width: clamp(15rem, 18.35vw, 17.625rem);
+  --wis-navy: #0a1f5d;
+  --wis-navy-deep: #061744;
+  --wis-blue: #183b82;
+  --wis-ice: #a3d1e0;
+  --wis-paper: #f7f9fc;
+  --wis-surface: #eef3f9;
+  --wis-line: #d6e1ee;
+  --wis-ink: #0a1f5d;
+  --wis-copy: #536a81;
+  --wis-muted: #8091a4;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html {
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  background: var(--wis-paper);
+  color: var(--wis-ink);
+  font-family: var(--font-sans);
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #0A0A0A;
-  color: #F5F5F5;
+  min-width: 320px;
+  margin: 0;
+  background: var(--wis-paper);
+  color: var(--wis-ink);
+  font-family: var(--font-sans);
   line-height: 1.7;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+a {
+  text-underline-offset: 0.22em;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--wis-ice);
+  outline-offset: 4px;
 }
 
 ::selection {
-  background-color: #C9A96E;
-  color: #0A0A0A;
+  background: var(--wis-ice);
+  color: var(--wis-navy);
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: var(--wis-surface);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #2A2A2A;
-  border-radius: 3px;
+  background: #b8c8da;
+  border: 2px solid var(--wis-surface);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #C9A96E;
+  background: var(--wis-blue);
+}
+
+.site-content {
+  min-height: 100vh;
+  margin-left: var(--sidebar-width);
+  background: var(--wis-paper);
+}
+
+.site-main {
+  min-height: 60vh;
+  overflow: clip;
+}
+
+.page-shell {
+  width: min(100%, 78rem);
+  margin: 0 auto;
+  padding-inline: clamp(1.5rem, 4.5vw, 5rem);
+}
+
+@media (max-width: 899px) {
+  .site-content {
+    margin-left: 0;
+    padding-top: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

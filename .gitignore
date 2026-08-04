@@ -12,6 +12,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# local visual QA artifacts
+tmp/
+
 
 # environment variables
 .env
@@ -22,3 +25,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local source archives and design working files
+/logo/
+/rwayne-after-20260225/

@@ -12,11 +12,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <section class="py-20">
     <div class="max-w-4xl mx-auto px-6">
-      <div class="grid md:grid-cols-3 gap-12 items-start">
-        <div class="md:col-span-1">
+      <div class="grid md:grid-cols-3 gap-16 xl:gap-20 items-start">
+        <div class="md:col-span-1 bio-photo">
           <img src="/profile.jpg" alt="Roland Wayne" class="w-full aspect-[3/4] object-cover rounded-lg shadow-lg" />
         </div>
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 bio-copy">
           <h2 class="font-serif text-2xl mb-6">个人简介</h2>
           <p class="text-text-secondary leading-relaxed mb-8">
             Roland专注于心血管疾病、糖尿病等慢性病的卫生经济研究与临床数据建模，同时也是医学领域BSS服务体系搭建者、操盘者与推动者。Roland已经在医学升学赛道深耕多年，目前已经建立非常完善的个人IP系统。
@@ -61,10 +61,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <section class="py-20">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="font-serif text-2xl text-center mb-12">工作职责</h2>
-      <div class="grid md:grid-cols-3 gap-6">
+  <section class="responsibilities-section">
+    <div class="university-shell">
+      <h2 class="section-title centered-title">工作职责</h2>
+      <div class="responsibilities-grid">
         {[
           { title: '团队管理', desc: '全面负责导师团队的组建、管理与人才发展机制设计' },
           { title: '体系搭建', desc: '自主开发服务流程标准化体系和智能化文书评价系统' },
@@ -74,19 +74,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           { title: 'AI科研教学', desc: '面向医学领域的AI工具应用培训，手把手带团队跑通真实科研场景' },
           { title: 'AI医学研究', desc: '将AI技术应用于医学研究全流程，包括文献检索、数据分析、论文写作等' },
         ].map((item) => (
-          <div class="p-6 border border-border">
-            <h3 class="font-medium mb-2">{item.title}</h3>
-            <p class="text-text-secondary text-sm">{item.desc}</p>
-          </div>
+          <article class="responsibility-card">
+            <h3>{item.title}</h3>
+            <p>{item.desc}</p>
+          </article>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="py-20 bg-secondary">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="font-serif text-2xl text-center mb-8">专业领域</h2>
-      <div class="flex flex-wrap justify-center gap-3">
+  <section class="expertise-section">
+    <div class="university-shell">
+      <h2 class="section-title centered-title">专业领域</h2>
+      <div class="expertise-grid">
         {[
           '卫生经济学研究',
           '临床数据建模',
@@ -97,7 +97,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           'AI科研教学',
           'AI医学研究',
         ].map((tag) => (
-          <span class="px-4 py-2 border border-accent/30 text-accent">{tag}</span>
+          <span class="expertise-item">{tag}</span>
         ))}
       </div>
     </div>
@@ -113,3 +113,142 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .university-shell {
+    width: min(100%, 68rem);
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 5vw, 5rem);
+  }
+
+  .bio-copy {
+    padding-left: 2.5rem;
+  }
+
+  .bio-photo {
+    padding-top: 3.5rem;
+  }
+
+  .section-title {
+    margin: 0;
+    color: var(--wis-navy);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+  }
+
+  .centered-title {
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    text-align: center;
+  }
+
+  .responsibilities-section {
+    padding-block: clamp(5rem, 8vw, 8rem);
+    background: var(--wis-paper);
+    border-bottom: 1px solid var(--wis-line);
+  }
+
+  .responsibilities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .responsibility-card {
+    min-height: 12.5rem;
+    padding: clamp(1.5rem, 2.3vw, 2.25rem);
+    background: #ffffff;
+    border: 1px solid var(--wis-line);
+  }
+
+  .responsibility-card:last-child {
+    grid-column: 2;
+  }
+
+  .responsibility-card h3 {
+    margin: 0 0 1rem;
+    color: var(--wis-navy);
+    font-size: 1.1rem;
+    font-weight: 650;
+    line-height: 1.45;
+  }
+
+  .responsibility-card p {
+    margin: 0;
+    color: var(--wis-copy);
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  .expertise-section {
+    padding-block: clamp(5rem, 8vw, 8rem);
+    background: var(--wis-surface);
+    border-bottom: 1px solid var(--wis-line);
+  }
+
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(4, max-content);
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .expertise-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.75rem;
+    padding: 0.8rem 1.35rem;
+    color: var(--wis-navy);
+    background: rgb(255 255 255 / 58%);
+    border: 1px solid #b9c9dc;
+    font-size: 1rem;
+    font-weight: 520;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 1000px) {
+    .responsibilities-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .responsibility-card:last-child {
+      grid-column: auto;
+    }
+
+    .expertise-grid {
+      grid-template-columns: repeat(2, max-content);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .bio-photo {
+      padding-top: 0;
+    }
+
+    .bio-copy {
+      padding-left: 0;
+    }
+
+    .responsibilities-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .responsibility-card {
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .expertise-grid {
+      grid-template-columns: 1fr;
+      width: min(100%, 22rem);
+      margin-inline: auto;
+    }
+
+    .expertise-item {
+      min-height: 3.5rem;
+    }
+  }
+</style>
