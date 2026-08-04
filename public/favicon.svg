@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title desc">
   <title id="title">Roland Wayne</title>
-  <desc id="desc">A geometric R mark in the WIS navy and ice-blue palette.</desc>
-  <rect width="32" height="32" rx="7" fill="#0A1F5D"/>
-  <path fill="#F8FBFF" d="M7.25 6.25h10.2c4.55 0 7.3 2.2 7.3 5.8 0 2.43-1.3 4.3-3.65 5.2l4.3 8.5h-5.65l-3.55-7.45h-3.65v7.45H7.25V6.25Zm5.3 4.25v3.65h4.5c1.55 0 2.4-.63 2.4-1.85 0-1.18-.85-1.8-2.4-1.8h-4.5Z"/>
-  <path fill="#9ED9EA" d="M19.55 5.15h3.55l-7.45 21.7H12.1l7.45-21.7Z"/>
+  <desc id="desc">A geometric navy R mark on a white field.</desc>
+  <rect width="32" height="32" rx="7" fill="#FFFFFF"/>
+  <path fill="#0A1F5D" d="M7.25 6.25h10.2c4.55 0 7.3 2.2 7.3 5.8 0 2.43-1.3 4.3-3.65 5.2l4.3 8.5h-5.65l-3.55-7.45h-3.65v7.45H7.25V6.25Zm5.3 4.25v3.65h4.5c1.55 0 2.4-.63 2.4-1.85 0-1.18-.85-1.8-2.4-1.8h-4.5Z"/>
 </svg>
