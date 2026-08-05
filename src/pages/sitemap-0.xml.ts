@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { getPublishedBlogPosts } from '../lib/posts';
 
 const XML_HEADERS = {
   'Content-Type': 'application/xml; charset=utf-8',
@@ -32,10 +32,8 @@ export const GET: APIRoute = async ({ site }) => {
     return new Response('Astro site URL is not configured', { status: 500 });
   }
 
-  const posts = await getCollection('blog');
-  const publishedBlogPaths = posts
-    .filter((post) => !post.data.draft)
-    .map((post) => `/blog/${post.id}/`);
+  const posts = await getPublishedBlogPosts();
+  const publishedBlogPaths = posts.map((post) => `/blog/${post.id}/`);
 
   const allPaths = [...STATIC_PATHS, ...publishedBlogPaths];
   const urlItems = allPaths

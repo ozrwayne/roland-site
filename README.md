@@ -18,7 +18,9 @@ npm run build
 ## 内容维护
 
 - 页面位于 `src/pages/`。
-- 文章位于 `src/content/blog/`，新增文章后首页和文章归档会在构建时自动更新。
+- 历史文章位于 `src/content/blog/`；新文章从 `https://cms.rolandwayne.com` 的 WordPress REST API 读取。
+- WordPress 与 Markdown 文章在构建时合并；slug 相同时以 WordPress 版本为准。
+- WordPress API 无法访问时构建会停止，避免部署一个缺少 CMS 文章的版本。
 - 图片等静态资源位于 `public/`。
 - Cloudflare Worker 配置位于 `wrangler.jsonc`。
 

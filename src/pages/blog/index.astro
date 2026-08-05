@@ -1,13 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getPublishedBlogPosts } from '../../lib/posts';
 
-const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => {
-    if (a.data.pinned !== b.data.pinned) return a.data.pinned ? -1 : 1;
-    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
-  });
+const posts = await getPublishedBlogPosts();
 
 const formatter = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
@@ -36,22 +31,22 @@ const formatter = new Intl.DateTimeFormat('zh-CN', {
               <a href={`/blog/${post.id}`}>
                 <span class="cover-frame">
                   <img
-                    src={post.data.cover ?? post.data.image ?? '/images/blog/welcome/cover.png'}
-                    alt={post.data.coverAlt ?? ''}
+                    src={post.cover ?? '/images/blog/welcome/cover.png'}
+                    alt={post.coverAlt ?? ''}
                     width="480"
                     loading="lazy"
                   />
                 </span>
                 <span class="post-copy">
                   <span class="meta">
-                    <time datetime={post.data.pubDate.toISOString()}>{formatter.format(post.data.pubDate)}</time>
-                    {post.data.pinned && <span class="pin">置顶</span>}
+                    <time datetime={post.pubDate.toISOString()}>{formatter.format(post.pubDate)}</time>
+                    {post.pinned && <span class="pin">置顶</span>}
                   </span>
-                  <span class="title">{post.data.title}</span>
-                  <span class="description">{post.data.description}</span>
-                  {post.data.tags.length > 0 && (
+                  <span class="title">{post.title}</span>
+                  <span class="description">{post.description}</span>
+                  {post.tags.length > 0 && (
                     <span class="tags">
-                      {post.data.tags.map((tag) => <span>{tag}</span>)}
+                      {post.tags.map((tag) => <span>{tag}</span>)}
                     </span>
                   )}
                 </span>

@@ -1,15 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getPublishedBlogPosts } from '../lib/posts';
 
-const publishedPosts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => {
-    if (a.data.pinned !== b.data.pinned) return a.data.pinned ? -1 : 1;
-    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
-  });
-
-const latestPosts = publishedPosts.slice(0, 5);
+const latestPosts = (await getPublishedBlogPosts()).slice(0, 5);
 const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
   month: '2-digit',
@@ -61,19 +54,19 @@ const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
               <span class="timeline-marker" aria-hidden="true"></span>
               <a class="article-card" href={`/blog/${post.id}`}>
                 <img
-                  src={post.data.cover ?? post.data.image ?? '/images/blog/welcome/cover.png'}
-                  alt={post.data.coverAlt ?? ''}
+                  src={post.cover ?? '/images/blog/welcome/cover.png'}
+                  alt={post.coverAlt ?? ''}
                   width="240"
                   height="150"
                   loading="lazy"
                 />
                 <span class="article-copy">
                   <span class="article-meta">
-                    <time datetime={post.data.pubDate.toISOString()}>{dateFormatter.format(post.data.pubDate)}</time>
-                    {post.data.pinned && <span class="pinned-label">置顶</span>}
+                    <time datetime={post.pubDate.toISOString()}>{dateFormatter.format(post.pubDate)}</time>
+                    {post.pinned && <span class="pinned-label">置顶</span>}
                   </span>
-                  <span class="article-title">{post.data.title}</span>
-                  <span class="article-description">{post.data.description}</span>
+                  <span class="article-title">{post.title}</span>
+                  <span class="article-description">{post.description}</span>
                 </span>
                 <i class="ph ph-arrow-up-right article-arrow" aria-hidden="true"></i>
               </a>
