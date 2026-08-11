@@ -1,7 +1,7 @@
 ---
 title: "RW Research Skill 更新：科研投稿也可以自动化了"
 description: "文章介绍 RW Research Skill 新增的期刊投稿模块：按期刊要求组织主文、图表和作者资料，预检文件与编号，协助填写并复核投稿系统，同时保留作者对最终提交和学术声明的责任。"
-slug: "rw-research-skill-%e6%9b%b4%e6%96%b0%ef%bc%9a%e7%a7%91%e7%a0%94%e6%8a%95%e7%a8%bf%e4%b9%9f%e5%8f%af%e4%bb%a5%e8%87%aa%e5%8a%a8%e5%8c%96%e4%ba%86"
+slug: "rw-research-skill-更新：科研投稿也可以自动化了"
 lang: zh
 pubDate: 2026-08-06T02:12:52+08:00
 siteDate: 2026-08-06T02:12:52+08:00
