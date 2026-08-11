@@ -2,6 +2,7 @@
 title: "280字看懂，剩下的复制给Claude Code，你的AI第二大脑就搭好了"
 description: "用 280 字说明基于 Claude Code 与 Obsidian 的个人第二大脑，并提供可直接交给 AI 执行的 12 维系统架构与完整搭建指令。"
 pubDate: 2026-03-08T11:35:44+08:00
+siteDate: 2026-08-04T09:35:55+08:00
 tags: ["Claude Code", "Obsidian", "第二大脑", "知识管理", "教程"]
 cover: "/images/blog/claude-code-second-brain-280/cover.jpg"
 coverAlt: "Claude Code 与 Obsidian 个人第二大脑搭建指南封面"

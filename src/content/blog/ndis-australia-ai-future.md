@@ -2,6 +2,7 @@
 title: "NDIS正在摧毁澳洲AI时代的新国运"
 description: "从卫生经济学与 AI 转型视角审视澳大利亚 NDIS 的财政扩张、支付机制和生产率问题，以及它如何影响澳洲在 AI 时代的资源配置与国家竞争力。"
 pubDate: 2026-02-28T20:21:10+08:00
+siteDate: 2026-08-04T09:35:55+08:00
 tags: ["澳大利亚", "NDIS", "卫生经济学", "AI", "公共政策"]
 cover: "/images/blog/ndis-australia-ai-future/cover.jpg"
 coverAlt: "NDIS 与澳大利亚 AI 时代发展主题封面"

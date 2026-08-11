@@ -1,0 +1,4 @@
+interface:
+  display_name: "发布高曝光文章"
+  short_description: "按曝光量与发布时间安全自动发布高曝光中文文章到 Astro 网站"
+  default_prompt: "使用 $publish-high-exposure-articles 按曝光量和发布时间选择并发布下一篇文章。"

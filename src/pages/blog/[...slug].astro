@@ -1,28 +1,26 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
-import { render } from 'astro:content';
-import { getPublishedBlogPosts } from '../../lib/posts';
+import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getPublishedBlogPosts();
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.map(post => ({
-    params: { slug: post.id },
+    params: { slug: post.data.slug ?? post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const Content = post.source === 'markdown' ? (await render(post.entry)).Content : null;
-const contentHtml = post.source === 'wordpress' ? post.contentHtml : '';
+const { Content } = await render(post);
 ---
 
 <BlogPost
-  title={post.title}
-  description={post.description}
-  pubDate={post.pubDate}
-  tags={post.tags}
-  cover={post.cover}
-  coverAlt={post.coverAlt}
+  title={post.data.title}
+  description={post.data.description}
+  pubDate={post.data.pubDate}
+  tags={post.data.tags}
+  cover={post.data.cover ?? post.data.image}
+  coverAlt={post.data.coverAlt}
 >
-  {Content ? <Content /> : <Fragment set:html={contentHtml} />}
+  <Content />
 </BlogPost>
