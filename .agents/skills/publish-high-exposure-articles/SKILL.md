@@ -59,10 +59,9 @@ missing article. One successful run publishes at most one article.
    text, headings, links, citations, and images. Remove only unmistakable
    extraction artifacts; do not rewrite the author's argument. Keep
    `draft: false` and `pinned: false` (the Welcome article is the only pinned
-   post). Keep the source `pubDate` unchanged and set `siteDate` to the Beijing
-   time when the article enters this site. The importer supplies `siteDate` for
-   new imports; if finishing an older uncommitted import that lacks it, add the
-   current Beijing publication time during review.
+   post). Keep the source `pubDate` unchanged. It is the canonical date used on
+   the article page, in homepage/archive labels, and for chronological sorting.
+   Do not add an upload or site-entry timestamp as the article date.
 
 6. Validate the content and site:
 

@@ -33,9 +33,9 @@ export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
       id: entry.data.slug ?? entry.id,
       title: entry.data.title,
       description: entry.data.description,
-      // Lists use the date the article entered this site. The source date stays
-      // in pubDate and remains the canonical date on the article itself.
-      pubDate: entry.data.siteDate ?? entry.data.pubDate,
+      // The source publication date is canonical everywhere: article pages,
+      // list labels, and chronological ordering.
+      pubDate: entry.data.pubDate,
       tags: entry.data.tags,
       cover: entry.data.cover ?? entry.data.image,
       coverAlt: entry.data.coverAlt,
@@ -45,6 +45,9 @@ export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
     }));
 
   return localPosts.sort((a, b) => {
+    const pinnedOrder = Number(b.pinned) - Number(a.pinned);
+    if (pinnedOrder) return pinnedOrder;
+
     const dateOrder = b.pubDate.valueOf() - a.pubDate.valueOf();
     return dateOrder || a.id.localeCompare(b.id);
   });

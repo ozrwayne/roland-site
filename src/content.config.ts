@@ -9,6 +9,8 @@ const blog = defineCollection({
     slug: z.string().min(1).optional(),
     lang: z.enum(['zh', 'en']).default('zh'),
     pubDate: z.coerce.date(),
+    // Legacy import timestamp retained for existing entries; it is not used
+    // for display or ordering. pubDate is the canonical article date.
     siteDate: z.coerce.date().optional(),
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),

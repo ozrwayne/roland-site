@@ -15,9 +15,7 @@ import re
 import sys
 import unicodedata
 import zipfile
-from datetime import datetime
 from pathlib import Path, PurePosixPath
-from zoneinfo import ZoneInfo
 
 sys.dont_write_bytecode = True
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -122,9 +120,7 @@ def cover_name(assets: dict[str, bytes]) -> str:
     return "cover.jpg"
 
 
-def render_frontmatter(
-    candidate: dict[str, object], slug: str, description: str, cover: str, site_date: str
-) -> str:
+def render_frontmatter(candidate: dict[str, object], slug: str, description: str, cover: str) -> str:
     published_at = str(candidate["published_at"])
     return "\n".join(
         [
@@ -133,7 +129,6 @@ def render_frontmatter(
             f"description: {yaml_string(description)}",
             "lang: zh",
             f"pubDate: {published_at}",
-            f"siteDate: {site_date}",
             f"sourceUrl: {yaml_string(str(candidate['source_url']))}",
             f"sourceViews: {int(candidate['views'])}",
             "tags: []",
@@ -172,15 +167,13 @@ def main() -> int:
     markdown, assets = archive_files(archive, str(candidate["title"]), str(candidate["source_url"]))
     rewritten = rewrite_markdown(markdown, slug)
     description = description_from_markdown(rewritten)
-    site_date = datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")
-    frontmatter = render_frontmatter(candidate, slug, description, cover_name(assets), site_date)
+    frontmatter = render_frontmatter(candidate, slug, description, cover_name(assets))
     result = {
         "status": "dry_run" if args.dry_run else "imported",
         "slug": slug,
         "title": candidate["title"],
         "views": candidate["views"],
         "published_at": candidate["published_at"],
-        "site_date": site_date,
         "source_url": candidate["source_url"],
         "archive": archive_relative,
         "asset_count": len(assets),
