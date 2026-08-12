@@ -12,8 +12,8 @@ tags:
   - 研究过程
   - 可复现性
   - AI科研
-cover: "/images/blog/welcome/cover.png"
-coverAlt: "深蓝入口与冰蓝玻璃结构组成的抽象建筑空间"
+cover: "/images/blog/research-correct-answer/cover.webp"
+coverAlt: "由问题、判断与分支节点构成的科研探索路径示意图"
 pinned: false
 draft: false
 ---

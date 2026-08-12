@@ -12,8 +12,8 @@ tags:
   - 期刊投稿
   - AI Agent
   - 学术工作流
-cover: "/images/blog/welcome/cover.png"
-coverAlt: "深蓝入口与冰蓝玻璃结构组成的抽象建筑空间"
+cover: "/images/blog/rw-research-skill-journal-submission/cover.webp"
+coverAlt: "论文文档经过自动化流程拆分为表格和图表的示意图"
 pinned: false
 draft: false
 ---
