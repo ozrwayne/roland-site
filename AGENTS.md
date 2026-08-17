@@ -3,15 +3,16 @@
 ## 项目范围
 
 - 本文件适用于整个仓库。
-- 本仓库是 `www.rolandwayne.com` 的 Astro 网站源码。
+- 本仓库是 `www.rolandwayne.com` 的 React 首页与 Astro 文章系统源码。
 - 当前生产分支是 `main`，远程仓库为 `ozrwayne/roland-site`。
 - `/Users/garylau/Work/rolandwayne` 本身就是仓库根目录；不要再在里面嵌套克隆一份仓库。
 
 ## 技术栈与目录
 
-- Astro 5 + Tailwind CSS 4。
+- React 19 + Vite 6 负责生产首页；Astro 5 + Tailwind CSS 4 负责文章、兼容路由、SEO 与 Cloudflare 构建。
 - 使用 `@astrojs/cloudflare` 适配 Cloudflare Workers/Pages。
-- 页面主要位于 `src/pages/`，布局位于 `src/layouts/`，内容位于 `src/content/`，静态资源位于 `public/`。
+- 首页位于 `apps/homepage/`；文章路由和布局位于 `src/pages/blog/`、`src/layouts/ArticlePost.astro`，内容位于 `src/content/`，文章静态资源位于 `public/`。
+- 旧 Astro UI 保存在 Git 标签 `archive/astro-legacy-2026-08-17`；旧公开 URL 通过 `src/pages/` 的永久重定向继续可达，不恢复旧 UI 源码。
 - `wrangler.jsonc` 是 Cloudflare 部署配置；构建输出目录是 `dist/`。
 - `node_modules/`、`.astro/`、`dist/` 和环境变量文件均为本地/生成内容，不应提交。
 

@@ -1,44 +1,41 @@
 ---
 name: publish-high-exposure-articles
-description: Publish exactly one unpublished X article per run from the local Roland.W archive, selecting strictly numeric exposure above 100,000 and continuing in Beijing publication-date order. Use for daily article publishing, importing the next high-exposure article, or maintaining this site's X-to-Astro content pipeline.
+description: Publish exactly one unpublished X article per run from the local Roland.W archive, selecting strictly numeric exposure above 100,000 in Beijing publication order, then add the same article as a complete book to the React homepage shelf. Use for daily article publishing, importing the next high-exposure article, repairing an interrupted X-to-site run, or maintaining the Roland article-and-bookshelf pipeline.
 ---
 
-# Publish high-exposure articles
+# Publish one high-exposure article and book
 
-Use this project skill whenever an article is to be imported from
-`rwayne-after-20260225/` into the Astro blog. The source is the local
-`engagement-table.md` plus the matching article ZIP; never scrape X or invent a
-missing article. One successful run publishes at most one article.
+Work only in `/Users/garylau/Work/rolandwayne`. One successful run creates at
+most one article, one matching bookshelf entry, and one focused content commit.
+Use only `rwayne-after-20260225/engagement-table.md` and its matching local ZIP;
+never scrape X or invent missing content.
 
-## Fixed workflow
+## Preflight
 
-1. Work only in `/Users/garylau/Work/rolandwayne`. Read the repository
-   `AGENTS.md` and inspect `git status --short` before changing anything.
-   Preserve unrelated user changes. They may remain in the working tree, but
-   they must never be staged; stop only when they conflict with the generated
-   article paths or make a safe isolated commit impossible.
-
-2. Select the next article with the deterministic selector:
+1. Read the repository `AGENTS.md` and `apps/homepage/AGENTS.md`.
+2. Inspect `git status --short --branch`. Preserve unrelated changes and never
+   stage them. Publishing must target this repository's `main` branch; stop if
+   another branch or conflicting edits make an isolated main-branch commit
+   unsafe.
+3. If a previous run already generated an article or book without completing
+   the pair, finish and validate that pair before selecting another article.
+4. Select the next candidate:
 
    ```bash
    python3 .agents/skills/publish-high-exposure-articles/scripts/select_next_article.py \
      --root /Users/garylau/Work/rolandwayne --threshold 100000 --json
    ```
 
-   Only rows whose exposure is a numeric value strictly greater than 100,000
-   qualify. Treat `待补读`, blank values, rounded values, and missing URLs as
-   ineligible. Sort by the engagement table's Beijing timestamp, oldest first.
-   Treat the latest qualifying table row already represented in
-   `src/content/blog/` as the publication cursor, skip every row at or before
-   that Beijing timestamp, and skip titles/source URLs already present there.
-   This prevents an older out-of-scope archive row from being backfilled after
-   the chronological series has advanced.
+Only numeric exposure strictly greater than 100,000 qualifies. Reject `待补读`,
+blank, rounded, or malformed values and rows without a status URL. Continue
+from the latest qualifying article already represented in `src/content/blog/`,
+then sort remaining candidates by Beijing publication time, oldest first. If
+there is no candidate, make no changes and report a no-op. Stop on a missing
+ZIP, metadata disagreement, or unreadable media; never skip forward.
 
-3. If there is no candidate, make no changes and report a no-op. If the
-   candidate's ZIP is missing, metadata disagrees with the table, or media is
-   unreadable, stop; do not skip forward to a later date.
+## Import and review
 
-4. Run the importer in dry-run mode, then import exactly that candidate:
+1. Dry-run, then import exactly the selected article:
 
    ```bash
    python3 .agents/skills/publish-high-exposure-articles/scripts/import_article.py \
@@ -47,62 +44,97 @@ missing article. One successful run publishes at most one article.
      --root /Users/garylau/Work/rolandwayne --threshold 100000
    ```
 
-   The importer creates a stable `x-<status-id>.md` slug, copies archive media
-   to `public/images/blog/<slug>/`, rewrites local asset links, and leaves the
-   source ZIP untouched. The cover is declared in frontmatter and the duplicate
-   leading cover image is removed from the article body.
+   The importer creates `src/content/blog/x-<status-id>.md`, copies archive
+   media to `public/images/blog/x-<status-id>/`, rewrites asset links, declares
+   the cover in frontmatter, and leaves the source ZIP untouched.
 
-5. Review the generated Markdown before publishing. Keep the source title,
-   publication date, source URL, and numeric `sourceViews` unchanged. Replace
-   the generated description with a concise, factual summary of the full
-   article (no invented claims), and add 3–6 useful tags. Retain the article's
-   text, headings, links, citations, and images. Remove only unmistakable
-   extraction artifacts; do not rewrite the author's argument. Keep
-   `draft: false` and `pinned: false` (the Welcome article is the only pinned
-   post). Keep the source `pubDate` unchanged. It is the canonical date used on
-   the article page, in homepage/archive labels, and for chronological sorting.
-   Do not add an upload or site-entry timestamp as the article date.
+2. Review the complete Markdown. Preserve the exact source title, `pubDate`,
+   `sourceUrl`, numeric `sourceViews`, argument, citations, links, and images.
+   Replace the starter description with a concise factual summary and add 3–6
+   useful tags. Remove only unmistakable extraction artifacts. Keep
+   `draft: false` and `pinned: false`; do not add or substitute a site-entry
+   date for the canonical source publication date.
 
-6. Validate the content and site:
+3. Treat medical, legal, financial, safety, and other time-sensitive claims as
+   a publication checkpoint. Verify current claims with authoritative sources.
+   Do not silently rewrite the source argument. Stop and request direction when
+   safe publication would require substantive changes. Any prior unchanged
+   exception applies only to the exact article for which the user granted it.
 
-   ```bash
-   npm run build
-   git diff --check
-   git status --short
-   ```
+## Add the matching React shelf book
 
-   Confirm the new Markdown, cover, and every referenced asset exist. Check
-   that no credentials, cookies, or private files entered the diff. If the
-   build or review fails, stop without selecting another article.
+Read `../add-bookshelf-book/references/book-schema.md`, then dry-run and add the
+reviewed article:
 
-7. For an explicitly authorized publish (including the configured daily
-   automation), stage only the generated Markdown and its asset directory,
-   create one focused commit such as `content: publish x-<status-id>`, and
-   push only this repository's `main` branch. Never stage unrelated changes;
-   never use force-push, reset, broad cleanup, or a different remote.
-   Cloudflare deployment is triggered by the repository's existing `main`
-   workflow; do not edit DNS or Cloudflare settings as part of this skill.
+```bash
+python3 .agents/skills/publish-high-exposure-articles/scripts/add_article_to_bookshelf.py \
+  --root /Users/garylau/Work/rolandwayne \
+  --article src/content/blog/x-<status-id>.md --dry-run
+python3 .agents/skills/publish-high-exposure-articles/scripts/add_article_to_bookshelf.py \
+  --root /Users/garylau/Work/rolandwayne \
+  --article src/content/blog/x-<status-id>.md
+```
 
-8. Report the published title, exposure, Beijing publication date, source URL,
-   commit, and push result. A successful run must not create a second article
-   or second content commit on the same day. If a prior generated article is
-   already present but not committed, finish and validate that article first;
-   if its generated paths conflict with unrelated edits, stop and report it.
+The script must:
 
-## Safety rules
+- append one sequential book to `apps/homepage/src/BookshelfApp.jsx`;
+- preserve the exact article title as live DOM text;
+- copy the article cover byte-for-byte to
+  `apps/homepage/public/assets/books/x-<status-id>.<ext>`;
+- link the book to the production `/blog/x-<status-id>/` route;
+- derive the year from `pubDate`, the kicker from reviewed tags, and stable
+  accent/thickness defaults from the slug;
+- refuse overwrites, duplicate IDs/hrefs, non-sequential numbering, missing
+  covers, drafts, or frontmatter mismatches.
 
-- Never publish a `待补读` row or a row at exactly 100,000 views.
-- Never delete, rename, or modify the archive ZIPs.
-- Never silently change source dates, exposure counts, titles, or source URLs.
-- Never continue past a missing archive, metadata mismatch, invalid media, build
-  failure, or failed push.
-- Keep all automation scoped to this project directory and this content source.
-- If no qualifying article remains, the correct result is a no-op rather than a
-  fabricated or lower-exposure post.
+Use `--tone dark` only when the cover is pale enough to require dark title text.
+Use `--kicker`, `--accent`, or `--thickness` only for a deliberate cover-level
+correction. Do not change shelf geometry, animation, clone behavior, or CSS for
+a routine article publication.
+
+## Validate
+
+Run:
+
+```bash
+npm run build
+node .agents/skills/add-bookshelf-book/scripts/validate-bookshelf.mjs
+git diff --check
+git status --short
+```
+
+Require the generated article page, all article assets, the copied book cover,
+and the book title in both homepage build outputs. Check that the semantic book
+links to the new article, cloned sets remain hidden and untabbable, and there is
+no desktop or 390px mobile horizontal overflow. Review the final diff for
+credentials, cookies, temporary files, and unrelated changes. Stop on any
+failure; do not select a second article.
+
+## Publish
+
+For an explicitly authorized run, including the configured daily automation,
+stage only:
+
+- `src/content/blog/x-<status-id>.md`;
+- `public/images/blog/x-<status-id>/`;
+- `apps/homepage/src/BookshelfApp.jsx`;
+- `apps/homepage/public/assets/books/x-<status-id>.<ext>`.
+
+Create one commit such as `content: publish x-<status-id> and shelf book`, then
+push only `main`. Never force-push, reset, broadly clean, delete source ZIPs, or
+stage other work. If `origin/main` advanced, use a fast-forward-safe update and
+preserve/hash-check any overlapping user paths before rebuilding. Cloudflare
+deployment follows the existing main-branch workflow; do not edit DNS or
+deployment settings.
+
+Report the title, exposure, Beijing publication date, source URL, article slug,
+book number, copied cover, validation results, commit, and push result. A
+successful run must not create a second article, book, or content commit that
+day.
 
 ## Scripts
 
-- `scripts/select_next_article.py` — deterministic table/ZIP/frontmatter
-  selector; exits 1 when no candidate exists.
-- `scripts/import_article.py` — validates one ZIP and imports its Markdown and
-  media; supports `--dry-run` and refuses to overwrite an existing slug.
+- `scripts/select_next_article.py` — select the next eligible table/ZIP row.
+- `scripts/import_article.py` — dry-run or import one article and its media.
+- `scripts/add_article_to_bookshelf.py` — dry-run or append its complete React
+  shelf book and copy its cover.

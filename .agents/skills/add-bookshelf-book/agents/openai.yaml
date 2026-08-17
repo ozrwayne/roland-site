@@ -1,0 +1,4 @@
+interface:
+  display_name: "添加书架图书"
+  short_description: "制作完整图书、嵌入文章或 PDF，并加入 Roland 无限书架"
+  default_prompt: "Use $add-bookshelf-book to create a complete book, add it to the live Roland bookshelf, build it, and verify it locally and online."
