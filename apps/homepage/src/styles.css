@@ -76,6 +76,11 @@ body {
   background: transparent;
 }
 
+.homepage-stage {
+  width: 100%;
+  height: 100%;
+}
+
 button,
 a {
   font: inherit;
@@ -144,10 +149,9 @@ img {
   user-select: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 180ms ease;
 }
 
-.global-landmark-background.is-ready .global-landmark-background__video {
+.homepage-stage.is-ready .global-landmark-background__video {
   opacity: 1;
   visibility: visible;
 }
@@ -174,6 +178,13 @@ img {
   isolation: isolate;
   overflow: hidden;
   background: transparent;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.homepage-stage.is-ready .site-shell {
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .content-scroll-region {

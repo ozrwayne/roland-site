@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const FALLBACK_DURATION_SECONDS = 15;
 const END_FRAME_GUARD_SECONDS = 1 / 24;
@@ -8,19 +8,71 @@ const VIDEO_PANES = [
   ["right", "/videos/australia-landmarks-ai-grok-v1-scroll-15s-right-cleanbg-2x.mp4"],
 ];
 
-function GlobalLandmarkBackground() {
-  const backgroundRef = useRef(null);
+function GlobalLandmarkBackground({ onReady }) {
   const videoRefs = useRef([]);
+  const onReadyRef = useRef(onReady);
+  const didReportReadyRef = useRef(false);
+  const [preparedPanes, setPreparedPanes] = useState([]);
 
   useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let retryTimer = 0;
+    let requestController = null;
+    let objectUrls = [];
+
+    const prepareVideoPanes = async () => {
+      requestController = new AbortController();
+
+      try {
+        const responses = await Promise.all(
+          VIDEO_PANES.map(([, source]) => fetch(source, {
+            cache: "force-cache",
+            credentials: "same-origin",
+            signal: requestController.signal,
+          })),
+        );
+
+        responses.forEach((response) => {
+          if (!response.ok) throw new Error(`Background video failed to load: ${response.status}`);
+        });
+
+        const blobs = await Promise.all(responses.map((response) => response.blob()));
+        if (cancelled) return;
+
+        objectUrls = blobs.map((blob) => URL.createObjectURL(blob));
+        setPreparedPanes(
+          VIDEO_PANES.map(([pane], index) => [pane, objectUrls[index]]),
+        );
+      } catch (error) {
+        if (cancelled || error.name === "AbortError") return;
+        requestController.abort();
+        retryTimer = window.setTimeout(prepareVideoPanes, 2000);
+      }
+    };
+
+    prepareVideoPanes();
+
+    return () => {
+      cancelled = true;
+      requestController?.abort();
+      window.clearTimeout(retryTimer);
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, []);
+
+  useEffect(() => {
+    if (preparedPanes.length !== VIDEO_PANES.length) return undefined;
+
     const videos = videoRefs.current.filter(Boolean);
     if (videos.length !== VIDEO_PANES.length) return undefined;
-    const background = backgroundRef.current;
     const scrollRoot = document.querySelector(".content-scroll-region");
     if (!scrollRoot) return undefined;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reducedMotion.matches) return undefined;
 
     let animationFrame = 0;
     let metadataReady = videos.every(
@@ -35,12 +87,15 @@ function GlobalLandmarkBackground() {
       const progress = scrollRange > 0
         ? Math.min(1, Math.max(0, scrollRoot.scrollTop / scrollRange))
         : 0;
-      const duration = Number.isFinite(videos[0].duration)
-        ? videos[0].duration
+      const availableDurations = videos
+        .map((video) => video.duration)
+        .filter((duration) => Number.isFinite(duration) && duration > 0);
+      const duration = availableDurations.length > 0
+        ? Math.min(...availableDurations)
         : FALLBACK_DURATION_SECONDS;
       const targetTime = Math.min(
         Math.max(0, duration - END_FRAME_GUARD_SECONDS),
-        progress * duration,
+        reducedMotion.matches ? 0 : progress * duration,
       );
 
       videos.forEach((video) => {
@@ -55,7 +110,10 @@ function GlobalLandmarkBackground() {
           !video.seeking &&
           Math.abs(video.currentTime - targetTime) <= 1 / 60,
       );
-      if (panesAreSynchronized) background?.classList.add("is-ready");
+      if (panesAreSynchronized && !didReportReadyRef.current) {
+        didReportReadyRef.current = true;
+        onReadyRef.current?.();
+      }
     };
 
     const requestSync = () => {
@@ -84,7 +142,9 @@ function GlobalLandmarkBackground() {
     });
     scrollRoot.addEventListener("scroll", requestSync, { passive: true });
     window.addEventListener("resize", requestSync, { passive: true });
+    reducedMotion.addEventListener("change", requestSync);
     resizeObserver?.observe(scrollRoot);
+    videos.forEach((video) => video.load());
     requestSync();
 
     return () => {
@@ -94,17 +154,17 @@ function GlobalLandmarkBackground() {
         video.removeEventListener("canplay", handleMediaReady);
         video.removeEventListener("seeked", handleMediaReady);
       });
-      background?.classList.remove("is-ready");
       scrollRoot.removeEventListener("scroll", requestSync);
       window.removeEventListener("resize", requestSync);
+      reducedMotion.removeEventListener("change", requestSync);
       resizeObserver?.disconnect();
       if (animationFrame) window.cancelAnimationFrame(animationFrame);
     };
-  }, []);
+  }, [preparedPanes]);
 
   return (
-    <div ref={backgroundRef} className="global-landmark-background" aria-hidden="true">
-      {VIDEO_PANES.map(([pane, source], index) => (
+    <div className="global-landmark-background" aria-hidden="true">
+      {preparedPanes.map(([pane, source], index) => (
         <video
           key={pane}
           ref={(node) => { videoRefs.current[index] = node; }}

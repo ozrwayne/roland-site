@@ -1700,6 +1700,7 @@ function ContactSection() {
 
 export function App() {
   const [activeSection, setActiveSection] = useState(null);
+  const [pageAssetsReady, setPageAssetsReady] = useState(false);
   const scrollProgressRef = useRef(null);
 
   useEffect(() => {
@@ -1759,8 +1760,8 @@ export function App() {
   }, []);
 
   return (
-    <>
-      <GlobalLandmarkBackground />
+    <div className={`homepage-stage${pageAssetsReady ? " is-ready" : ""}`}>
+      <GlobalLandmarkBackground onReady={() => setPageAssetsReady(true)} />
 
       <div className="site-shell">
         <SVGFollowerCursor />
@@ -1834,6 +1835,6 @@ export function App() {
           </main>
         </div>
       </div>
-    </>
+    </div>
   );
 }
