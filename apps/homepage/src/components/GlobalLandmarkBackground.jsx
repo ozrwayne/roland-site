@@ -9,11 +9,13 @@ const VIDEO_PANES = [
 ];
 
 function GlobalLandmarkBackground() {
+  const backgroundRef = useRef(null);
   const videoRefs = useRef([]);
 
   useEffect(() => {
     const videos = videoRefs.current.filter(Boolean);
     if (videos.length !== VIDEO_PANES.length) return undefined;
+    const background = backgroundRef.current;
     const scrollRoot = document.querySelector(".content-scroll-region");
     if (!scrollRoot) return undefined;
 
@@ -46,6 +48,14 @@ function GlobalLandmarkBackground() {
           video.currentTime = targetTime;
         }
       });
+
+      const panesAreSynchronized = videos.every(
+        (video) =>
+          video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA &&
+          !video.seeking &&
+          Math.abs(video.currentTime - targetTime) <= 1 / 60,
+      );
+      if (panesAreSynchronized) background?.classList.add("is-ready");
     };
 
     const requestSync = () => {
@@ -54,7 +64,7 @@ function GlobalLandmarkBackground() {
       }
     };
 
-    const handleLoadedMetadata = (event) => {
+    const handleMediaReady = (event) => {
       event.currentTarget.pause();
       metadataReady = videos.every(
         (video) => video.readyState >= HTMLMediaElement.HAVE_METADATA,
@@ -67,7 +77,10 @@ function GlobalLandmarkBackground() {
       : new ResizeObserver(requestSync);
 
     videos.forEach((video) => {
-      video.addEventListener("loadedmetadata", handleLoadedMetadata);
+      video.addEventListener("loadedmetadata", handleMediaReady);
+      video.addEventListener("loadeddata", handleMediaReady);
+      video.addEventListener("canplay", handleMediaReady);
+      video.addEventListener("seeked", handleMediaReady);
     });
     scrollRoot.addEventListener("scroll", requestSync, { passive: true });
     window.addEventListener("resize", requestSync, { passive: true });
@@ -76,8 +89,12 @@ function GlobalLandmarkBackground() {
 
     return () => {
       videos.forEach((video) => {
-        video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        video.removeEventListener("loadedmetadata", handleMediaReady);
+        video.removeEventListener("loadeddata", handleMediaReady);
+        video.removeEventListener("canplay", handleMediaReady);
+        video.removeEventListener("seeked", handleMediaReady);
       });
+      background?.classList.remove("is-ready");
       scrollRoot.removeEventListener("scroll", requestSync);
       window.removeEventListener("resize", requestSync);
       resizeObserver?.disconnect();
@@ -86,7 +103,7 @@ function GlobalLandmarkBackground() {
   }, []);
 
   return (
-    <div className="global-landmark-background" aria-hidden="true">
+    <div ref={backgroundRef} className="global-landmark-background" aria-hidden="true">
       {VIDEO_PANES.map(([pane, source], index) => (
         <video
           key={pane}

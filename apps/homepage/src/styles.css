@@ -142,6 +142,14 @@ img {
   object-position: center center;
   pointer-events: none;
   user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms ease;
+}
+
+.global-landmark-background.is-ready .global-landmark-background__video {
+  opacity: 1;
+  visibility: visible;
 }
 
 @media (max-width: 760px) {
