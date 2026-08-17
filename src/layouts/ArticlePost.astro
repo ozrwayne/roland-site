@@ -29,6 +29,7 @@ const formatter = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en', {
   month: 'long',
   day: 'numeric',
 });
+const category = tags[0] ?? (lang === 'zh' ? '文章' : 'Article');
 
 const navLinks = [
   { label: 'About', href: '/#about' },
@@ -44,7 +45,7 @@ const navLinks = [
 <html lang={htmlLang}>
   <head>
     <SEO title={title} description={description} image={cover} />
-    <meta name="theme-color" content="#f2e8d3" />
+    <meta name="theme-color" content="#f7f6f2" />
     <link rel="stylesheet" href="/vendor/phosphor/style.css" />
     <link rel="preload" as="font" type="font/woff2" href="/assets/anthropic-sans.woff2" crossorigin />
   </head>
@@ -83,20 +84,9 @@ const navLinks = [
       <article class="post">
         <header class="post-header">
           <div class="post-heading">
-            <div class="post-utility">
-              <a href="/blog">← 全部文章</a>
-              <time datetime={pubDate.toISOString()}>{formatter.format(pubDate)}</time>
-            </div>
-
-            <p class="post-kicker">Research · Systems · Article</p>
+            <p class="post-kicker">{category}</p>
             <h1>{title}</h1>
-            <p class="post-description">{description}</p>
-
-            {tags.length > 0 && (
-              <div class="tags" aria-label="文章标签">
-                {tags.map((tag) => <span>{tag}</span>)}
-              </div>
-            )}
+            <time class="post-date" datetime={pubDate.toISOString()}>{formatter.format(pubDate)}</time>
           </div>
         </header>
 
@@ -137,11 +127,11 @@ const navLinks = [
   }
 
   :global(:root) {
-    --article-bg: #f2e8d3;
+    --article-bg: #f7f6f2;
     --article-ink: #171613;
     --article-copy: #4e4941;
     --article-muted: #746b5f;
-    --article-line: #cbbda5;
+    --article-line: #d9d3c8;
     --article-accent: #a64b34;
     --article-display: 'Iowan Old Style', Baskerville, Georgia, 'Times New Roman', serif;
     --article-serif: 'Songti SC', 'Noto Serif SC', STSong, SimSun, serif;
@@ -324,90 +314,57 @@ const navLinks = [
   }
 
   .post-header {
-    padding: clamp(4rem, 8vw, 7.5rem) 0 clamp(2.5rem, 5vw, 4.5rem);
+    padding: clamp(4rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
   }
 
   .post-heading {
     width: min(100% - 3rem, 70rem);
     margin: 0 auto;
-  }
-
-  .post-utility {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding-bottom: 1.2rem;
-    color: var(--article-muted);
-    border-bottom: 1px solid var(--article-line);
-    font-family: var(--article-sans);
-    font-size: 0.78rem;
-  }
-
-  .post-utility a {
-    color: var(--article-accent);
-    font-weight: 620;
-    text-decoration: none;
+    text-align: center;
   }
 
   .post-kicker {
-    margin: clamp(2.2rem, 5vw, 4rem) 0 0;
+    margin: 0;
     color: var(--article-accent);
     font-family: var(--article-sans);
-    font-size: 0.76rem;
+    font-size: 0.82rem;
     font-weight: 720;
     letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
   .post-heading h1 {
-    max-width: 64rem;
-    margin: 0.75rem 0 0;
+    max-width: 68rem;
+    margin: clamp(1.15rem, 2.4vw, 1.8rem) auto 0;
     color: var(--article-ink);
     font-family: var(--article-display), var(--article-serif);
-    font-size: clamp(3rem, 7vw, 6.9rem);
+    font-size: clamp(2.8rem, 5vw, 5.4rem);
     font-weight: 500;
-    letter-spacing: -0.055em;
-    line-height: 0.98;
+    letter-spacing: -0.045em;
+    line-height: 1.08;
     text-wrap: balance;
   }
 
-  .post-description {
-    max-width: 48rem;
-    margin: clamp(1.5rem, 3vw, 2.4rem) 0 0;
-    color: var(--article-copy);
-    font-family: var(--article-serif);
-    font-size: clamp(1.05rem, 1.7vw, 1.3rem);
-    line-height: 1.8;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0;
-    margin-top: 1.6rem;
+  .post-date {
+    display: block;
+    margin-top: clamp(1.7rem, 3vw, 2.5rem);
     color: var(--article-muted);
     font-family: var(--article-sans);
-    font-size: 0.72rem;
-  }
-
-  .tags span:not(:last-child)::after {
-    margin: 0 0.7rem;
-    color: var(--article-accent);
-    content: '·';
+    font-size: 0.9rem;
+    line-height: 1.4;
   }
 
   .cover-wrap {
-    width: min(100% - 3rem, 70rem);
-    margin: 0 auto clamp(3.5rem, 7vw, 6rem);
+    width: min(100% - 3rem, 68rem);
+    margin: 0 auto clamp(4rem, 7vw, 6rem);
   }
 
   .cover-wrap img {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 44rem;
     object-fit: contain;
+    border-radius: clamp(1rem, 2vw, 1.75rem);
   }
 
   .post-body,
@@ -497,11 +454,17 @@ const navLinks = [
   .post-body :global(pre) {
     overflow-x: auto;
     padding: 1.25rem 1.4rem;
-    color: #f4eee2;
+    color: #ffffff;
     background: var(--article-ink);
-    border-radius: 0;
+    border-radius: 0.8rem;
     font-size: 0.86rem;
     line-height: 1.7;
+  }
+
+  .post-body :global(pre code),
+  .post-body :global(pre code *) {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
   }
 
   .post-body :global(table) {
@@ -587,19 +550,9 @@ const navLinks = [
       padding-top: 3rem;
     }
 
-    .post-utility {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 0.45rem;
-    }
-
     .post-heading h1 {
-      font-size: clamp(2.8rem, 14vw, 4.5rem);
-      line-height: 1.04;
-    }
-
-    .post-description {
-      font-size: 1rem;
+      font-size: clamp(2.4rem, 10.5vw, 3.6rem);
+      line-height: 1.08;
     }
 
     .post-end {
