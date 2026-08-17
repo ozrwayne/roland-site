@@ -17,6 +17,7 @@ const {
   title,
   description,
   pubDate,
+  updatedDate,
   tags = [],
   cover,
   coverAlt = '',
@@ -44,9 +45,19 @@ const navLinks = [
 <!DOCTYPE html>
 <html lang={htmlLang}>
   <head>
-    <SEO title={title} description={description} image={cover} />
+    <SEO
+      title={title}
+      description={description}
+      image={cover}
+      imageAlt={coverAlt}
+      type="article"
+      publishedTime={pubDate.toISOString()}
+      modifiedTime={updatedDate?.toISOString()}
+      articleSection={category}
+      tags={tags}
+      lang={lang}
+    />
     <meta name="theme-color" content="#f7f6f2" />
-    <link rel="stylesheet" href="/vendor/phosphor/style.css" />
     <link rel="preload" as="font" type="font/woff2" href="/assets/anthropic-sans.woff2" crossorigin />
   </head>
   <body>

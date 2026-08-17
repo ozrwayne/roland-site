@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:homepage": "vite --config apps/homepage/vite.config.mjs",
-    "build": "astro build && vite build --config apps/homepage/vite.config.mjs && node apps/homepage/scripts/prepare-sites-build.mjs && node scripts/overlay-homepage.mjs",
+    "build": "astro build && vite build --config apps/homepage/vite.config.mjs && node scripts/overlay-homepage.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

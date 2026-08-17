@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 let embeddedPdfUrl = null;
 
 function getEmbeddedPdfUrl(dataUrl) {
+  if (!dataUrl.startsWith("data:application/pdf;base64,")) return dataUrl;
   if (embeddedPdfUrl) return embeddedPdfUrl;
 
   const encodedPdf = dataUrl.slice(dataUrl.indexOf(",") + 1);
@@ -300,122 +301,5 @@ export function EmbeddedBookshelf() {
       </div>
       <div className="homepage-bookshelf-baseline" aria-hidden="true" />
     </section>
-  );
-}
-
-export function BookshelfApp() {
-  const [activeBook, setActiveBook] = useState(null);
-  const [manuallyPaused, setManuallyPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [setCount, setSetCount] = useState(2);
-  const shelfWindowRef = useRef(null);
-  const shelfTrackRef = useRef(null);
-  const firstSetRef = useRef(null);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  useLayoutEffect(() => {
-    const measureLoop = () => {
-      const shelfWindow = shelfWindowRef.current;
-      const shelfTrack = shelfTrackRef.current;
-      const firstSet = firstSetRef.current;
-      if (!shelfWindow || !shelfTrack || !firstSet) return;
-
-      const loopDistance = firstSet.offsetWidth;
-      const windowWidth = shelfWindow.clientWidth;
-      if (!loopDistance || !windowWidth) return;
-
-      shelfTrack.style.setProperty("--loop-distance", `${loopDistance}px`);
-      setSetCount(Math.max(3, Math.ceil(windowWidth / loopDistance) + 2));
-    };
-
-    measureLoop();
-    const observer = new ResizeObserver(measureLoop);
-    observer.observe(shelfWindowRef.current);
-    observer.observe(firstSetRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const paused = manuallyPaused || Boolean(activeBook) || reducedMotion;
-  const sets = useMemo(() => Array.from({ length: setCount }, () => books), [setCount]);
-
-  return (
-    <main className="library">
-      <div className="library-grain" aria-hidden="true" />
-
-      <header className="library-header">
-        <a className="library-brand" href="https://www.rolandwayne.com/">
-          <span className="library-mark" aria-hidden="true">RW</span>
-          <span>Roland Wayne</span>
-        </a>
-        <p>Articles reimagined as books</p>
-        <button
-          type="button"
-          className="motion-toggle"
-          aria-pressed={manuallyPaused}
-          onClick={() => setManuallyPaused(value => !value)}
-        >
-          <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
-          {paused ? "继续移动" : "暂停书架"}
-        </button>
-      </header>
-
-      <section className="shelf-hero" aria-labelledby="shelf-title">
-        <div className="title-lockup">
-          <p className="edition-label">Edition 01 — 2025–2026</p>
-          <h1 id="shelf-title">Roland</h1>
-          <div className="shelf-intro">
-            <strong>12 篇文章 · 1 本白皮书 · 13 本书</strong>
-            <span>研究、健康、AI、教育与澳洲观察</span>
-          </div>
-        </div>
-
-        <div className="shelf-window" ref={shelfWindowRef}>
-          <div
-            className={`shelf-track${paused ? " is-paused" : ""}`}
-            ref={shelfTrackRef}
-          >
-            {sets.map((set, setIndex) => (
-              <div
-                className="book-set"
-                key={setIndex}
-                ref={setIndex === 0 ? firstSetRef : undefined}
-                aria-hidden={setIndex !== 0 ? "true" : undefined}
-              >
-                {set.map((book, index) => (
-                  <Book
-                    book={book}
-                    clone={setIndex !== 0}
-                    stack={(setCount * books.length) - (setIndex * books.length + index)}
-                    key={`${setIndex}-${book.id}`}
-                    onActivate={setActiveBook}
-                    onDeactivate={() => setActiveBook(null)}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="shelf-baseline" aria-hidden="true" />
-
-        <aside className={`active-book-info${activeBook ? " is-visible" : ""}`} aria-live="polite">
-          <span>{activeBook ? `RW / ${activeBook.number}` : "Hover a book"}</span>
-          <strong>{activeBook?.title ?? "悬停或聚焦一本书"}</strong>
-          <small>{activeBook?.kicker ?? "点击封面阅读原文章"}</small>
-        </aside>
-
-        <footer className="shelf-footer">
-          <span>Writing as objects</span>
-          <a href="https://www.rolandwayne.com/blog/">浏览全部文章 ↗</a>
-        </footer>
-      </section>
-    </main>
   );
 }
