@@ -1781,7 +1781,7 @@ export function App() {
             <div className="hero-layout">
               <div className="hero-copy-body hero-enter-copy">
                 <h1>Roland<br />Wayne</h1>
-                <p className="hero-lead">研究者｜系统构建者｜跨界领域思考者</p>
+                <p className="hero-lead">研究员｜系统构建者｜跨界思考者</p>
                 <p className="hero-note">
                   昆士兰大学医学院博士候选人，在健康经济学、实施科学与 AI 系统实践之间，寻找更清晰、更可执行的答案。
                 </p>
