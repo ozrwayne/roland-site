@@ -1371,30 +1371,34 @@ function FeaturedAustraliaSection() {
         <header className="australia-feature-heading">
           <div>
             <span>Selected writing / Australia</span>
-            <h2 id="australia-feature-title">澳洲观察</h2>
+            <h2 id="australia-feature-title">Article</h2>
           </div>
-          <p>从资源、公共政策到住房市场，用三篇长文拆解澳大利亚在 AI 时代面对的真实选择。</p>
         </header>
 
         <div className="australia-feature-layout">
-          <div className="australia-feature-list" role="list" aria-label="三篇澳洲精选文章">
-            {featuredAustraliaArticles.map((article) => (
-              <button
-                className={`australia-feature-item${article.id === selectedArticle.id ? " is-active" : ""}`}
-                type="button"
-                role="listitem"
-                aria-pressed={article.id === selectedArticle.id}
-                onClick={() => setSelectedId(article.id)}
-                key={article.id}
-              >
-                <span className="australia-feature-number">{article.number}</span>
-                <span className="australia-feature-item-copy">
-                  <small>{article.date.replaceAll("-", ".")} · {article.eyebrow}</small>
-                  <strong>{article.title}</strong>
-                </span>
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
-            ))}
+          <div className="australia-feature-directory">
+            <div className="australia-feature-list" role="list" aria-label="三篇澳洲精选文章">
+              {featuredAustraliaArticles.map((article) => (
+                <button
+                  className={`australia-feature-item${article.id === selectedArticle.id ? " is-active" : ""}`}
+                  type="button"
+                  role="listitem"
+                  aria-pressed={article.id === selectedArticle.id}
+                  onClick={() => setSelectedId(article.id)}
+                  key={article.id}
+                >
+                  <span className="australia-feature-number">{article.number}</span>
+                  <span className="australia-feature-item-copy">
+                    <small>{article.date.replaceAll("-", ".")} · {article.eyebrow}</small>
+                    <strong>{article.title}</strong>
+                  </span>
+                  <ArrowRight size={18} aria-hidden="true" />
+                </button>
+              ))}
+            </div>
+            <a className="australia-feature-all" href="/articles/">
+              阅读所有文章 <ArrowRight size={17} />
+            </a>
           </div>
 
           <article className="australia-feature-detail" key={selectedArticle.id}>
@@ -1416,10 +1420,6 @@ function FeaturedAustraliaSection() {
           </article>
         </div>
 
-        <footer className="australia-feature-footer">
-          <span>全部文章与完整写作书架</span>
-          <a href="/articles/">搜索所有文章 <ArrowRight size={17} /></a>
-        </footer>
       </section>
       <img
         className="article-corner-cloud"
