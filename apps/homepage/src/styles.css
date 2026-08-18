@@ -1055,11 +1055,11 @@ img {
 
 .australia-feature-detail {
   display: grid;
-  grid-template-rows: auto auto;
+  grid-template-rows: var(--detail-cover-height, auto) minmax(0, 1fr);
+  height: var(--detail-card-height, auto);
   overflow: hidden;
   background: rgba(255, 252, 246, 0.62);
   border: 1px solid rgba(166, 75, 52, 0.36);
-  animation: content-fade-in 260ms ease both;
 }
 
 .australia-feature-cover {
@@ -1082,10 +1082,17 @@ img {
 }
 
 .australia-feature-cover img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  visibility: hidden;
   object-fit: cover;
   object-position: center 44%;
+}
+
+.australia-feature-cover img.is-active {
+  visibility: visible;
 }
 
 .australia-feature-cover span {
@@ -1103,13 +1110,27 @@ img {
   text-transform: uppercase;
 }
 
+.australia-feature-detail-copy-stack {
+  display: grid;
+  grid-row: 2;
+  min-height: 0;
+}
+
 .australia-feature-detail-copy {
   display: flex;
-  grid-row: 2;
+  grid-area: 1 / 1;
   flex-direction: column;
   align-items: flex-start;
+  height: 100%;
   gap: 0;
   padding: clamp(28px, 3vw, 42px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.australia-feature-detail-copy.is-active {
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .australia-feature-meta {
@@ -1144,7 +1165,7 @@ img {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 20px;
+  margin: 20px 0 24px;
 }
 
 .australia-feature-tags span {
@@ -1160,7 +1181,7 @@ img {
   align-items: center;
   gap: 10px;
   min-height: 46px;
-  margin-top: 24px;
+  margin-top: auto;
   padding: 0 18px;
   color: #fff;
   background: var(--ink);
@@ -1421,17 +1442,6 @@ img {
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 750;
-}
-
-@keyframes content-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .article-knowledge-section {
@@ -3400,6 +3410,11 @@ img {
   .australia-feature-detail-slot {
     margin-bottom: 0;
     transform: none;
+  }
+
+  .australia-feature-detail {
+    grid-template-rows: auto auto;
+    height: auto;
   }
 
   .australia-feature-list {
