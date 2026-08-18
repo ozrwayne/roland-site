@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   BrainCircuit,
@@ -1357,6 +1357,11 @@ function SignalingSection() {
 
 function FeaturedAustraliaSection() {
   const [selectedId, setSelectedId] = useState(featuredAustraliaArticles[0].id);
+  const headingRef = useRef(null);
+  const directoryActionRef = useRef(null);
+  const detailSlotRef = useRef(null);
+  const detailCoverRef = useRef(null);
+  const detailActionRef = useRef(null);
   const selectedArticle = featuredAustraliaArticles.find((article) => article.id === selectedId)
     ?? featuredAustraliaArticles[0];
   const formattedDate = new Intl.DateTimeFormat("zh-CN", {
@@ -1365,13 +1370,76 @@ function FeaturedAustraliaSection() {
     day: "2-digit",
   }).format(new Date(`${selectedArticle.date}T00:00:00+08:00`));
 
+  useLayoutEffect(() => {
+    const heading = headingRef.current;
+    const directoryAction = directoryActionRef.current;
+    const detailSlot = detailSlotRef.current;
+    const detailCover = detailCoverRef.current;
+    const detailAction = detailActionRef.current;
+    if (!heading || !directoryAction || !detailSlot || !detailCover || !detailAction) {
+      return undefined;
+    }
+
+    const desktopQuery = window.matchMedia("(min-width: 901px)");
+    let animationFrame = 0;
+    let settleTimer = 0;
+
+    const alignActions = () => {
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = window.requestAnimationFrame(() => {
+        if (!desktopQuery.matches) {
+          detailSlot.dataset.alignOffset = "0";
+          detailSlot.style.setProperty("--detail-align-offset", "0px");
+          detailSlot.style.removeProperty("--detail-cover-height");
+          return;
+        }
+
+        const currentOffset = Number.parseFloat(detailSlot.dataset.alignOffset || "0");
+        const headingRect = heading.getBoundingClientRect();
+        const directoryActionRect = directoryAction.getBoundingClientRect();
+        const detailSlotRect = detailSlot.getBoundingClientRect();
+        const detailCoverRect = detailCover.getBoundingClientRect();
+        const detailActionRect = detailAction.getBoundingClientRect();
+        const naturalDetailTop = detailSlotRect.top - currentOffset;
+        const contentBelowCover = detailActionRect.bottom
+          - detailSlotRect.top
+          - detailCoverRect.height;
+        const nextOffset = headingRect.top - naturalDetailTop;
+        const nextCoverHeight = directoryActionRect.bottom
+          - headingRect.top
+          - contentBelowCover;
+
+        detailSlot.dataset.alignOffset = String(nextOffset);
+        detailSlot.style.setProperty("--detail-align-offset", `${nextOffset}px`);
+        detailSlot.style.setProperty("--detail-cover-height", `${nextCoverHeight}px`);
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(alignActions);
+    resizeObserver.observe(directoryAction);
+    resizeObserver.observe(detailSlot);
+    desktopQuery.addEventListener("change", alignActions);
+    window.addEventListener("resize", alignActions);
+    alignActions();
+    settleTimer = window.setTimeout(alignActions, 320);
+    document.fonts?.ready.then(alignActions);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.clearTimeout(settleTimer);
+      resizeObserver.disconnect();
+      desktopQuery.removeEventListener("change", alignActions);
+      window.removeEventListener("resize", alignActions);
+    };
+  }, [selectedId]);
+
   return (
     <div className="article-module-wrap" id="articles">
       <section className="article-module-surface module-surface australia-feature" aria-labelledby="australia-feature-title">
         <header className="australia-feature-heading">
           <div>
             <span>Selected writing / Australia</span>
-            <h2 id="australia-feature-title">Article</h2>
+            <h2 id="australia-feature-title" ref={headingRef}>Article</h2>
           </div>
         </header>
 
@@ -1396,28 +1464,34 @@ function FeaturedAustraliaSection() {
                 </button>
               ))}
             </div>
-            <a className="australia-feature-all" href="/articles/">
+            <a className="australia-feature-all" href="/articles/" ref={directoryActionRef}>
               阅读所有文章 <ArrowRight size={17} />
             </a>
           </div>
 
-          <article className="australia-feature-detail" key={selectedArticle.id}>
-            <div className="australia-feature-cover">
-              <img src={selectedArticle.cover} alt="" loading="lazy" />
-              <span>{selectedArticle.number} / Australia dossier</span>
-            </div>
-            <div className="australia-feature-detail-copy">
-              <p className="australia-feature-meta">{formattedDate} · {selectedArticle.eyebrow}</p>
-              <h3>{selectedArticle.title}</h3>
-              <p>{selectedArticle.description}</p>
-              <div className="australia-feature-tags" aria-label="文章主题">
-                {selectedArticle.tags.map((tag) => <span key={tag}>{tag}</span>)}
+          <div className="australia-feature-detail-slot" ref={detailSlotRef}>
+            <article className="australia-feature-detail" key={selectedArticle.id}>
+              <div className="australia-feature-cover" ref={detailCoverRef}>
+                <img src={selectedArticle.cover} alt="" loading="lazy" />
+                <span>{selectedArticle.number} / Australia dossier</span>
               </div>
-              <a className="australia-feature-read cursor-target" href={selectedArticle.href}>
-                阅读全文 <ArrowRight size={17} />
-              </a>
-            </div>
-          </article>
+              <div className="australia-feature-detail-copy">
+                <p className="australia-feature-meta">{formattedDate} · {selectedArticle.eyebrow}</p>
+                <h3>{selectedArticle.title}</h3>
+                <p>{selectedArticle.description}</p>
+                <div className="australia-feature-tags" aria-label="文章主题">
+                  {selectedArticle.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
+                <a
+                  className="australia-feature-read cursor-target"
+                  href={selectedArticle.href}
+                  ref={detailActionRef}
+                >
+                  阅读全文 <ArrowRight size={17} />
+                </a>
+              </div>
+            </article>
+          </div>
         </div>
 
       </section>

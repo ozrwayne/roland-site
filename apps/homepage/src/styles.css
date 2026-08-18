@@ -923,7 +923,8 @@ img {
 }
 
 .australia-feature {
-  padding: clamp(34px, 4.4vw, 64px);
+  padding: var(--portrait-reference-top-space) clamp(34px, 4.4vw, 64px)
+    var(--portrait-reference-bottom-space);
 }
 
 .australia-feature-heading {
@@ -1046,10 +1047,15 @@ img {
   transform: translateX(0);
 }
 
+.australia-feature-detail-slot {
+  align-self: start;
+  margin-bottom: var(--detail-align-offset, 0);
+  transform: translateY(var(--detail-align-offset, 0));
+}
+
 .australia-feature-detail {
   display: grid;
   grid-template-rows: auto auto;
-  align-self: start;
   overflow: hidden;
   background: rgba(255, 252, 246, 0.62);
   border: 1px solid rgba(166, 75, 52, 0.36);
@@ -1059,6 +1065,7 @@ img {
 .australia-feature-cover {
   position: relative;
   grid-row: 1;
+  height: var(--detail-cover-height, auto);
   aspect-ratio: 16 / 8.8;
   min-height: 260px;
   max-height: 390px;
@@ -3389,6 +3396,11 @@ img {
     grid-template-columns: 1fr;
   }
 
+  .australia-feature-detail-slot {
+    margin-bottom: 0;
+    transform: none;
+  }
+
   .australia-feature-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3462,6 +3474,7 @@ img {
 
   .australia-feature-cover {
     grid-row: 1;
+    height: auto;
     min-height: 210px;
     max-height: 300px;
   }
