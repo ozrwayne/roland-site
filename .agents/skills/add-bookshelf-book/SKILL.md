@@ -5,7 +5,7 @@ description: Add a complete article, report, or PDF book to the live Roland Wayn
 
 # Add Bookshelf Book
 
-Work from `/Users/garylau/Work/rolandwayne`. The deployed bookshelf and article pages share the repository's React/Vite production build.
+Work from `/Users/garylau/Work/rolandwayne`. The deployed `/articles/` bookshelf and article pages share the repository's React/Vite production build.
 
 ## Prepare
 
@@ -43,13 +43,13 @@ npm run build
 node .agents/skills/add-bookshelf-book/scripts/validate-bookshelf.mjs
 ```
 
-The root build must finish the Vite homepage build and React article static generation. Require `dist/index.html` and at least one `dist/blog/<slug>/index.html`.
+The root build must finish the Vite homepage build and React article static generation. Require `dist/index.html`, `dist/articles/index.html`, and at least one `dist/blog/<slug>/index.html`.
 
 For a PDF, compare copied and source checksums. If a separate self-contained HTML deliverable exists, also require one matching embedded PDF payload; do not assume the production Vite site embeds public assets.
 
 ## Local visual QA
 
-1. Start `npm run dev` yourself.
+1. Start `npm run dev` yourself and open `/articles/`.
 2. Use Browser at desktop and mobile sizes. Inspect the new book at rest and on hover/focus.
 3. Check title hierarchy, closed seams, parallel right-page edges, last-to-first overlap, no document overflow, and continuous motion.
 4. Confirm only the first set is keyboard reachable; all clones are hidden and untabbable.
@@ -60,7 +60,7 @@ For a PDF, compare copied and source checksums. If a separate self-contained HTM
 When the user says the site is deployed, test the supplied domain or `https://www.rolandwayne.com/` read-only. Verify:
 
 - canonical HTTPS URL, title, and major navigation;
-- the `Article` section and moving book rail on desktop and mobile;
+- the homepage `Article` entry and `/articles/` moving book rail on desktop and mobile;
 - network/static asset responses and console errors;
 - at least one normal article book destination;
 - the newest book and PDF viewer behavior;

@@ -5,13 +5,13 @@
 | Purpose | Path |
 |---|---|
 | Book data and React anatomy | `apps/homepage/src/BookshelfApp.jsx` |
-| Homepage book geometry and cover CSS | `apps/homepage/src/styles.css` |
+| Article-library book geometry and cover CSS | `apps/homepage/src/styles.css`, `apps/homepage/src/articles.css` |
 | Cover/PDF assets | `public/assets/books/` |
-| Homepage entry | `apps/homepage/src/App.jsx` |
+| Article library entry | `apps/homepage/src/ArticlesIndexPage.jsx` |
 | Homepage package build | `apps/homepage/package.json` |
 | Root production build and React SSG | `package.json`, `scripts/generate-react-site.mjs` |
 
-`App.jsx` renders `EmbeddedBookshelf` inside the `Article` surface. `BookshelfApp.jsx` exports one `books` array consumed by that production rail.
+`ArticlesIndexPage.jsx` renders `EmbeddedBookshelf` on `/articles/`. `BookshelfApp.jsx` exports one `books` array consumed by that production rail; the homepage keeps only its separate three-article Australia feature.
 
 ## Entry shape
 

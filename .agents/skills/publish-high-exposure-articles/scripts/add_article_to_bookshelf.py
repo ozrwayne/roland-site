@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add one published React article to the React homepage bookshelf."""
+"""Add one published React article to the React article-library bookshelf."""
 
 from __future__ import annotations
 

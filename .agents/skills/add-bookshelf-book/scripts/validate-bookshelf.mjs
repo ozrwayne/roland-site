@@ -14,8 +14,9 @@ const homepageRoot = join(projectRoot, "apps/homepage");
 const paths = {
   app: join(homepageRoot, "src/BookshelfApp.jsx"),
   css: join(homepageRoot, "src/styles.css"),
-  appEntry: join(homepageRoot, "src/App.jsx"),
+  bookshelfEntry: join(homepageRoot, "src/ArticlesIndexPage.jsx"),
   rootHtml: join(projectRoot, "dist/index.html"),
+  articlesHtml: join(projectRoot, "dist/articles/index.html"),
   publicAssets: join(projectRoot, "public/assets"),
   rootDistAssets: join(projectRoot, "dist/assets"),
 };
@@ -33,11 +34,12 @@ if (errors.length) {
   process.exit(1);
 }
 
-const [app, css, appEntry, rootHtml] = await Promise.all([
+const [app, css, bookshelfEntry, rootHtml, articlesHtml] = await Promise.all([
   readFile(paths.app, "utf8"),
   readFile(paths.css, "utf8"),
-  readFile(paths.appEntry, "utf8"),
+  readFile(paths.bookshelfEntry, "utf8"),
   readFile(paths.rootHtml, "utf8"),
+  readFile(paths.articlesHtml, "utf8"),
 ]);
 
 async function readBuiltJavaScript(assetDirectory) {
@@ -49,7 +51,7 @@ async function readBuiltJavaScript(assetDirectory) {
 }
 
 const rootJavaScript = await readBuiltJavaScript(paths.rootDistAssets);
-const rootBuild = rootHtml + rootJavaScript;
+const rootBuild = rootHtml + articlesHtml + rootJavaScript;
 
 const start = app.indexOf("export const books = [");
 const end = app.indexOf("\n];", start);
@@ -82,7 +84,7 @@ for (const asset of localAssets) {
   }
 }
 
-if (!appEntry.includes("<EmbeddedBookshelf />")) fail("EmbeddedBookshelf is not mounted in App.jsx.");
+if (!bookshelfEntry.includes("<EmbeddedBookshelf />")) fail("EmbeddedBookshelf is not mounted on the searchable article page.");
 if (!css.includes("skewY(-18.4349488deg)")) fail("Right page skew invariant is missing.");
 if (/\.book-spine\b/.test(css) || /className="book-spine"/.test(app)) fail("A forbidden left spine face is present.");
 if (!app.includes("ResizeObserver") || !app.includes('setProperty("--loop-distance"')) fail("Measured responsive loop is missing.");

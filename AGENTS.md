@@ -13,17 +13,18 @@
 - React 19.2 + Vite 6.4 是唯一前端运行时，负责规范首页 `/` 与全部 `/blog/<slug>/` 文章页。
 - `npm run build` 先由 Vite 构建首页到根 `dist/`，再由 `scripts/generate-react-site.mjs` 使用 React SSR 生成文章静态 HTML、Sitemap 与 404 页面。
 - `worker/index.js` 是纯 JavaScript Cloudflare Worker，只负责联系 API 与静态资源分发；旧 URL 重定向由 `public/_redirects` 维护。
-- 首页源码入口是 `apps/homepage/src/App.jsx`；书架数据与组件在 `apps/homepage/src/BookshelfApp.jsx`；全局地标背景在 `apps/homepage/src/components/GlobalLandmarkBackground.jsx`；首页样式集中在 `apps/homepage/src/styles.css`。
-- 文章内容在 `content/blog/`，生成器与校验器位于 `scripts/`，文章 React 组件与样式位于 `apps/homepage/src/ArticlePage.jsx`、`article.css`。全部静态资源统一位于根 `public/`。
+- 首页源码入口是 `apps/homepage/src/App.jsx`；可搜索文章库位于 `apps/homepage/src/ArticlesIndexPage.jsx`；书架数据与组件在 `apps/homepage/src/BookshelfApp.jsx`；全局地标背景在 `apps/homepage/src/components/GlobalLandmarkBackground.jsx`；首页样式集中在 `apps/homepage/src/styles.css`。
+- 文章内容在 `content/blog/`，生成器与校验器位于 `scripts/`，文章库样式位于 `apps/homepage/src/articles.css`，文章详情 React 组件与样式位于 `apps/homepage/src/ArticlePage.jsx`、`article.css`。全部静态资源统一位于根 `public/`。
 - `node_modules/`、`dist/`、环境变量文件及本地实验产物均不是源码，不得提交。
 
 ## 路由与信息架构契约
 
 - `/` 是唯一规范首页。当前首页顺序是 `About → Article → Signal → Building → Collaboration → Contact`。
-- 首页锚点是 `#about`、`#articles`、`#signaling`、`#building`、`#collaborating`、`#contacting`；Research 位于 Building 内的 `#researching`。
-- `/blog` 永久重定向到 `/#articles`；`/blog/<slug>/` 是可索引的文章详情页。
-- `/about`、`/services`、`/research`、`/university`、`/contact` 及现有 `/zh/*` 入口必须继续以 301 指向对应首页锚点。
-- Sitemap 只广告 `/` 与具体文章页，不把重定向入口或 `/blog` 列为竞争页面。
+- 首页模块仍保留 `about`、`articles`、`signaling`、`building`、`collaborating`、`contacting` 这些内部 DOM id，但站内导航不得把它们写入地址栏；同页导航使用 `.content-scroll-region`，跨页导航通过 `sessionStorage` 传递目标并回到纯 `/`。
+- 首页 Article 模块只展示三篇澳洲精选文章；完整动态书架与可搜索文章索引位于规范路由 `/articles/`。
+- `/blog` 永久重定向到 `/articles/`；`/blog/<slug>/` 是可索引的文章详情页。
+- `/about`、`/services`、`/research`、`/university`、`/contact` 及现有 `/zh/*` 入口继续以 301 指向纯 `/`，不得重新引入 URL hash。
+- Sitemap 广告 `/`、`/articles/` 与具体文章页，不把重定向入口或 `/blog` 列为竞争页面。
 - 不随意改动公开 slug、锚点、Canonical、Open Graph、JSON-LD、robots、sitemap 或旧链接迁移行为。
 
 ## 当前设计与交互边界
@@ -38,7 +39,7 @@
 ## 内容与书架一致性
 
 - 文章 `pubDate` 是规范发布日期；`siteDate` 仅为旧导入兼容字段，不用于显示或排序。草稿不得进入生产列表或 Sitemap。
-- 每篇进入首页书架的文章都必须同时具备有效的 Markdown 文章、媒体、完整 book object、书封资源和正确生产链接。不要把书架退化为普通封面卡片。
+- 每篇进入文章库书架的文章都必须同时具备有效的 Markdown 文章、媒体、完整 book object、书封资源和正确生产链接。不要把书架退化为普通封面卡片。
 - 日常高曝光文章发布必须使用 `.agents/skills/publish-high-exposure-articles/`；单独添加文章、报告或 PDF 书籍使用 `.agents/skills/add-bookshelf-book/`。一次发布最多一篇，保留无关工作区改动，只暂存明确产物。
 - 书架内容的唯一数据源是 `apps/homepage/src/BookshelfApp.jsx` 导出的 `books`；不要在 `App.jsx` 或构建脚本中维护第二份数量或书目。
 
@@ -61,13 +62,15 @@ npm run preview        # 在完整 build 后预览根生产产物
 
 ## 视觉与路由验收
 
-- UI 改动至少检查常规桌面和 390px 左右移动端，覆盖首屏、唯一滚动根、导航锚点、Article 展开区与书架、Signal、Building、Collaboration、Contact。
+- UI 改动至少检查常规桌面和 390px 左右移动端，覆盖首屏、唯一滚动根、无 hash 导航、首页澳洲精选 Article、`/articles/` 搜索与完整书架、Signal、Building、Collaboration、Contact。
 - 检查无横向溢出、键盘焦点可见、skip link 可用、`prefers-reduced-motion` 生效、媒体失败有可读 fallback，且控制台没有本次改动引入的错误。
-- 路由或内容改动要验证 `/`、至少一个 `/blog/<slug>/`、`/blog` 重定向及受影响的旧入口；构建成功不能代替浏览器交互和视觉检查。
+- 路由或内容改动要验证 `/`、`/articles/`、至少一个 `/blog/<slug>/`、`/blog` 重定向及受影响的旧入口；构建成功不能代替浏览器交互和视觉检查。
 
 ## Git、部署与隐私
 
 - 开始前检查 `git status`，保留用户已有和未跟踪改动。更新前优先 `git pull --ff-only`；禁止 `git reset --hard`、强制推送、宽泛清理或删除远程分支。
-- 修改完成后检查 scoped diff，再报告构建与浏览器验证。提交、推送、部署、合并或其他外部写入只有在用户明确要求时执行。
+- 本项目已有用户长期授权：完成用户要求的代码或内容改动并通过相称验证后，默认自动提交、推送到生产分支并等待 Cloudflare 部署完成；只读检查、诊断、方案讨论或验证失败时不得发布。
+- 每次发布必须只暂存本次明确产物，记录发布前 `origin/main` SHA 作为回退点，并核对远端提交与线上页面。需要回退时创建 revert commit，禁止用 reset、强推或覆盖历史。
+- 修改完成后检查 scoped diff，再报告构建、浏览器验证、远端提交、部署结果与回退 SHA。DNS、权限、生产环境变量或其他超出代码发布的外部写入仍需单独明确授权。
 - 未经明确授权，不修改域名、DNS、Cloudflare 配置、权限、生产环境变量或联系邮件路由。
 - 不读取、输出或提交集中式密钥文件、Cookie、访问令牌、私钥或生产数据。环境变量文件只保留最小必要子集并确保被 Git 忽略。
