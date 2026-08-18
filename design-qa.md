@@ -21,11 +21,13 @@
 - Desktop: 1720 × 1258, no document horizontal overflow, bookshelf left/right edges at 0/1720, no console errors.
 - Mobile: 390 × 844, one-column cards, full-width bookshelf, 16:9 cover frame, and no horizontal overflow.
 - Search: entering `澳洲` returned 5 matching articles and clearing the query restored the list.
+- Server/client consistency: article dates are explicitly formatted in `Asia/Shanghai`, so Cloudflare's UTC prerender and the browser produce identical date text without a hydration error.
 
 ## Comparison History
 
 1. Initial implementation used `100vw` for the full-bleed shelf. The rendered page exposed a horizontal scrollbar because the viewport unit included the vertical scrollbar gutter.
 2. The shelf was moved to an inline-size query container and sized with `100cqw`. Post-fix evidence measured `scrollWidth === clientWidth`, with the shelf exactly aligned to both viewport edges.
+3. Production verification exposed a pre-existing timezone mismatch: Workers rendered one article as `2026/08/05` while the browser rendered `2026/08/06`. The formatter now names `Asia/Shanghai`, and an UTC build produces the same `2026/08/06` text as the client.
 
 ## Follow-up Polish
 
