@@ -1,6 +1,6 @@
 ---
 name: publish-high-exposure-articles
-description: Publish exactly one unpublished X article per run from the local Roland.W archive, selecting strictly numeric exposure above 100,000 in Beijing publication order, then add the same article as a complete book to the React homepage shelf. Use for daily article publishing, importing the next high-exposure article, repairing an interrupted X-to-site run, or maintaining the Roland article-and-bookshelf pipeline.
+description: Publish exactly one unpublished X article per run from the local Roland.W archive, selecting strictly numeric exposure above 100,000 in Beijing publication order, then add the same article as a complete book to the React article-library shelf. Use for daily article publishing, importing the next high-exposure article, repairing an interrupted X-to-site run, or maintaining the Roland article-and-bookshelf pipeline.
 ---
 
 # Publish one high-exposure article and book
@@ -103,8 +103,8 @@ git diff --check
 git status --short
 ```
 
-Require the generated article page, all article assets, the copied book cover,
-and the book title in both homepage build outputs. Check that the semantic book
+Require the generated article page, `dist/articles/index.html`, all article assets, the copied book cover,
+and the book title in the article-library build output. Check that the semantic book
 links to the new article, cloned sets remain hidden and untabbable, and there is
 no desktop or 390px mobile horizontal overflow. Review the final diff for
 credentials, cookies, temporary files, and unrelated changes. Stop on any

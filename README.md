@@ -8,16 +8,18 @@
 
 `About → Article → Signal → Building → Collaboration → Contact`
 
-- Article 包含知识网络、文章 heading 与动态书架。
+- Article 以主从布局展示三篇澳洲精选文章；完整动态书架与可搜索索引位于 `/articles/`。
 - Building 合并 Services 与 Research。
-- 旧 `/about`、`/services`、`/research`、`/university`、`/contact` 和 `/zh/*` 地址继续 301 到对应首页锚点。
-- `/blog/<slug>/` 是 React 静态生成的独立文章页；`/blog` 301 到首页 Article。
+- 首页导航在同一滚动主页内定位，但地址栏始终保持纯 `/`，不写入 hash。
+- 旧 `/about`、`/services`、`/research`、`/university`、`/contact` 和 `/zh/*` 地址继续 301 到纯 `/`。
+- `/blog/<slug>/` 是 React 静态生成的独立文章页；`/blog` 301 到 `/articles/`。
 
 ## 生产结构
 
 | 路径 | 作用 |
 |---|---|
 | `apps/homepage/src/App.jsx` | React 首页结构、内容与交互 |
+| `apps/homepage/src/ArticlesIndexPage.jsx` | 可搜索文章索引与完整书架 |
 | `apps/homepage/src/ArticlePage.jsx` | React 文章页结构与 hydration |
 | `apps/homepage/src/BookshelfApp.jsx` | 生产书架数据与完整书本组件 |
 | `apps/homepage/src/components/GlobalLandmarkBackground.jsx` | 三段同步、滚动控制的全局背景视频 |
@@ -49,6 +51,6 @@ node .agents/skills/add-bookshelf-book/scripts/validate-bookshelf.mjs
 - 推送前完成 `npm run build`、`npm run validate`、`git diff --check`，并检查桌面与移动端页面；构建成功不替代浏览器交互验证。
 - 发布 X 高曝光文章使用项目 Skill `.agents/skills/publish-high-exposure-articles/`，一次最多一篇并同步加入书架。
 - 单独添加文章、报告或 PDF 书籍使用 `.agents/skills/add-bookshelf-book/`。
-- 提交、推送、部署、DNS 或 Cloudflare 配置改动必须另有明确授权。
+- 完成并验证的代码或内容改动默认自动提交、推送到生产分支并等待 Cloudflare 部署；每次记录上线前 SHA，回退使用 revert commit。DNS、权限、生产环境变量和 Cloudflare 配置改动仍需单独授权。
 
 项目维护边界与当前视觉/交互契约见 `AGENTS.md`、`apps/homepage/AGENTS.md` 和 `BASELINE.md`。

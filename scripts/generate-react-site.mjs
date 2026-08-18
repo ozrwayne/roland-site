@@ -131,16 +131,69 @@ function createArticleHead(article, assetTags, articleCss) {
     <meta name="twitter:description" content="${escapeHtml(article.description)}" />
     <meta name="twitter:image" content="${escapeHtml(image)}" />
     <meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}" />
-    <link rel="icon" type="image/png" href="/assets/roland-avatar-favicon.png" />
+    <link rel="icon" type="image/png" href="/assets/roland-profile-library.png" />
     <link rel="preload" as="font" type="font/woff2" href="/assets/anthropic-sans.woff2" crossorigin />
     ${schemas.map((schema) => `<script type="application/ld+json">${safeJson(schema)}</script>`).join("\n    ")}
     <style>${articleCss}</style>
     ${assetTags}`;
 }
 
+function createArticlesIndexHead(articles, assetTags, pageCss) {
+  const canonical = `${siteOrigin}/articles/`;
+  const title = `所有文章 | ${siteName}`;
+  const description = "搜索 Roland Wayne 关于医学、健康经济学、澳大利亚、教育与 AI 的全部文章，并浏览完整写作书架。";
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${canonical}#collection`,
+    url: canonical,
+    name: title,
+    description,
+    isPartOf: { "@id": `${siteOrigin}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: articles.length,
+      itemListElement: articles.map((article, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${siteOrigin}/blog/${encodeURIComponent(article.slug)}/`,
+        name: article.title,
+      })),
+    },
+  };
+
+  return `
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f3ea" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    <link rel="canonical" href="${canonical}" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:url" content="${canonical}" />
+    <meta property="og:site_name" content="${siteName}" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${description}" />
+    <link rel="icon" type="image/png" href="/assets/roland-profile-library.png" />
+    <link rel="preload" as="font" type="font/woff2" href="/assets/anthropic-sans.woff2" crossorigin />
+    <script type="application/ld+json">${safeJson(personSchema)}</script>
+    <script type="application/ld+json">${safeJson(websiteSchema)}</script>
+    <script type="application/ld+json">${safeJson(schema)}</script>
+    <style>${pageCss}</style>
+    ${assetTags}`;
+}
+
 function createSitemap(articles) {
   const urls = [
     { loc: `${siteOrigin}/` },
+    { loc: `${siteOrigin}/articles/` },
     ...articles.map((article) => ({
       loc: `${siteOrigin}/blog/${encodeURIComponent(article.slug)}/`,
       lastmod: (article.updatedDate || article.pubDate).slice(0, 10),
@@ -157,6 +210,10 @@ ${urls.map(({ loc, lastmod }) => `  <url><loc>${escapeHtml(loc)}</loc>${lastmod 
 const articles = await loadPublishedArticles(projectRoot);
 const baseHtml = await readFile(join(distRoot, "index.html"), "utf8");
 const articleCss = await readFile(join(projectRoot, "apps/homepage/src/article.css"), "utf8");
+const articlesIndexCss = [
+  await readFile(join(projectRoot, "apps/homepage/src/styles.css"), "utf8"),
+  await readFile(join(projectRoot, "apps/homepage/src/articles.css"), "utf8"),
+].join("\n");
 const assetTags = [
   ...(baseHtml.match(/<link rel="modulepreload"[^>]*>/g) || []),
   ...(baseHtml.match(/<script type="module"[^>]*><\/script>/g) || []),
@@ -195,6 +252,27 @@ for (const article of articles) {
   await mkdir(dirname(target), { recursive: true });
   await writeFile(target, html);
 }
+
+const articleSummaries = articles.map(({ html, sourceFile, ...article }) => ({
+  ...article,
+  href: `/blog/${encodeURIComponent(article.slug)}/`,
+}));
+const { ArticlesIndexPage } = await vite.ssrLoadModule("/src/ArticlesIndexPage.jsx");
+const articlesIndexMarkup = renderToString(
+  React.createElement(ArticlesIndexPage, { articles: articleSummaries }),
+);
+const articlesIndexHtml = `<!doctype html>
+<html lang="zh-CN">
+  <head>${createArticlesIndexHead(articleSummaries, assetTags, articlesIndexCss)}
+  </head>
+  <body class="articles-route">
+    <div id="root">${articlesIndexMarkup}</div>
+    <script id="__ARTICLES_DATA__" type="application/json">${safeJson(articleSummaries)}</script>
+  </body>
+</html>
+`;
+await mkdir(join(distRoot, "articles"), { recursive: true });
+await writeFile(join(distRoot, "articles", "index.html"), articlesIndexHtml);
 
 const sitemap = createSitemap(articles);
 await writeFile(join(distRoot, "sitemap-0.xml"), sitemap);

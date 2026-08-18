@@ -10,9 +10,9 @@
 ## 页面骨架与滚动
 
 - `.homepage-stage` 分成固定尺寸的 `.site-header` 行与下方 `.content-scroll-region`。后者是唯一纵向滚动根。
-- 所有锚点定位、active nav、文章知识面板、viewport scrollbar 和背景时间映射都必须读取 `.content-scroll-region` 的 `scrollTop`、`scrollHeight` 与 `clientHeight`，不要使用 `window.scrollY` 或恢复 body 主滚动。
+- 所有模块定位、active nav、viewport scrollbar 和背景时间映射都必须读取 `.content-scroll-region` 的 `scrollTop`、`scrollHeight` 与 `clientHeight`，不要使用 `window.scrollY` 或恢复 body 主滚动。
 - Header 始终占有独立布局行；内容不得进入 header 矩形。桌面品牌从 `Roland Wayne` 收拢为 `RW` 的动画在滚动后可逆；移动端保持现有菜单和 Contact 行为。
-- 规范 section 顺序及锚点是 `About #about`、`Article #articles`、`Signal #signaling`、`Building #building`、`Collaboration #collaborating`、`Contact #contacting`。Research 是 Building 内的 `#researching`。
+- 规范 section 顺序是 `About → Article → Signal → Building → Collaboration → Contact`。DOM id 继续服务内部定位与旧链接兼容，但点击导航不得产生 URL hash；跨页目标通过 `navigation.js` 的 sessionStorage 意图回到纯 `/` 后定位。
 
 ## 全局地标背景
 
@@ -29,10 +29,10 @@
 - Hero 保留宽屏黄金比例构图、左文右肖像、现有 display 字体、无描边头像和三个 pointer-inert 云层素材。云层是局部前景拼贴，不是全页纹理；不得遮住脸、主要按钮或可读正文。
 - 桌面 SVG follower cursor 只在现有支持条件下显示；触摸设备和 reduced-motion 环境保持关闭。
 
-## Article 与书架
+## Article 与文章库
 
-- `#articles` 包含文章知识网络、完整 Article heading 和同一 surface 内的 `EmbeddedBookshelf`。知识面板展开必须留在 header 下方内容 viewport，并在普通文档流中为 heading 与书架让出空间。
-- 面板进入可以分阶段；退出时 topics、covers、lines 一起消失并收拢，不把进入序列逐项倒放。
+- 首页 `#articles` 是三篇澳洲精选文章的主从浏览 surface：左侧/上方为可选择目录，右侧/下方为当前文章封面、摘要、主题与详情入口，并提供 `/articles/` 全部文章入口。
+- `/articles/` 是独立 React 文章库，包含完整 `EmbeddedBookshelf` 与可搜索的 17 篇文章索引；搜索覆盖标题、摘要和主题，且必须保留键盘操作、清空和空结果状态。
 - 书架唯一数据源是 `BookshelfApp.jsx` 的 `books`。每本书保留 front cover、top page edge、right page block、back cover、厚度和可读 DOM 标题；不能改成 flat cover card。
 - 书本本身保持轴对齐，倾斜只来自 rail/window 与整本书的等量反向旋转。右 page block 使用一个 `skewY` 矩形，不创建独立左 spine，也不改为四点 polygon。
 - 动画循环以一组完整书目的实测宽度为周期；保留响应式 clone 数、跨 set 单调 stacking、hover/focus 暂停和 reduced-motion。只有第一组进入 accessibility tree 与 tab order。
@@ -55,6 +55,6 @@
 ## 开发与验收
 
 - 开发使用仓库根的 `npm run dev`；完整生产验收使用 `npm run build`，确认根 `dist/index.html` 与具体 `dist/blog/<slug>/index.html` 同时生成。
-- Agent 自行启动本地服务器并用浏览器检查桌面与移动端，不要求用户手动启动。交互检查至少覆盖滚动根、品牌收拢、所有 nav 锚点、知识面板展开/退出、书架循环与焦点、Contact 动作和 reduced-motion。
+- Agent 自行启动本地服务器并用浏览器检查桌面与移动端，不要求用户手动启动。交互检查至少覆盖滚动根、品牌收拢、无 hash 导航、首页澳洲文章切换、`/articles/` 搜索、书架循环与焦点、Contact 动作和 reduced-motion。
 - 样式或布局调整后同时检查首屏和页面下半部；只看 build、DOM 或静态截图都不能单独证明交互正确。
 - 保留无关工作区改动，不修改生成目录。没有用户明确授权时，不提交、推送、部署或修改线上内容。

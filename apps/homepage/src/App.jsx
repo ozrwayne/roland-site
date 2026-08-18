@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import GlobalLandmarkBackground from "./components/GlobalLandmarkBackground";
 import SVGFollowerCursor from "./components/SVGFollowerCursor";
-import { EmbeddedBookshelf } from "./BookshelfApp.jsx";
+import { consumeHomeSection } from "./navigation.js";
 
 const navItems = [
   { id: "about", label: "About" },
@@ -53,7 +53,7 @@ const setPageScrollInstantly = (scrollRoot, top) => {
   });
 };
 
-const scrollToPageSection = (id, { updateHash = true } = {}) => {
+const scrollToPageSection = (id) => {
   const scrollRoot = document.querySelector(".content-scroll-region");
   const target = document.getElementById(id);
   if (!scrollRoot || !target) return false;
@@ -78,9 +78,6 @@ const scrollToPageSection = (id, { updateHash = true } = {}) => {
     window.setTimeout(realign, 1300);
   }
 
-  if (updateHash && window.location.hash !== `#${id}`) {
-    window.history.pushState(null, "", `#${id}`);
-  }
   return true;
 };
 
@@ -90,8 +87,43 @@ const handlePageSectionLink = (event, id, afterNavigate) => {
   afterNavigate?.();
 };
 
-const rolandAvatar = "/assets/roland-avatar-original.png";
 const rolandHeroPortrait = "/assets/roland-profile-library.png";
+const rolandAvatar = rolandHeroPortrait;
+const featuredAustraliaArticles = [
+  {
+    id: "australia-2026",
+    number: "01",
+    date: "2026-02-25",
+    eyebrow: "经济 · AI · 关键矿产",
+    title: "AI、矿产与澳洲经济：2026，澳洲能迎来新国运吗？",
+    description: "在 AI 重塑全球价值链的背景下，澳大利亚的位置在哪里？从资源禀赋、地缘优势与加工能力，判断这副好牌能否真正兑现。",
+    cover: "/images/blog/australia-2026/cover.jpg",
+    href: "/blog/australia-2026/",
+    tags: ["澳大利亚", "经济", "AI"],
+  },
+  {
+    id: "ndis-australia-ai-future",
+    number: "02",
+    date: "2026-02-28",
+    eyebrow: "卫生经济学 · 公共政策",
+    title: "NDIS正在摧毁澳洲AI时代的新国运",
+    description: "从卫生经济学与 AI 转型视角审视 NDIS 的财政扩张、支付机制和生产率问题，以及资源配置如何影响国家竞争力。",
+    cover: "/images/blog/ndis-australia-ai-future/cover.jpg",
+    href: "/blog/ndis-australia-ai-future/",
+    tags: ["澳大利亚", "NDIS", "公共政策"],
+  },
+  {
+    id: "australia-housing-market-2026",
+    number: "03",
+    date: "2026-03-07",
+    eyebrow: "房地产 · 利率 · 住房",
+    title: "写在澳大利亚房地产市场崩溃的前夜",
+    description: "用供给、信贷和需求三条件框架分析 2026 年澳洲房地产市场，区分系统性崩盘与长期实际阴跌。",
+    cover: "/images/blog/australia-housing-market-2026/cover.jpg",
+    href: "/blog/australia-housing-market-2026/",
+    tags: ["澳大利亚", "房地产", "利率"],
+  },
+];
 const articleTopics = [
   { id: "health", label: "健康与医学" },
   { id: "research", label: "科研与工具" },
@@ -790,7 +822,7 @@ function Header({ activeSection }) {
     <header ref={headerRef} className={`site-header${headerScrolled ? " is-scrolled" : ""}`}>
       <a
         className="brand-mark"
-        href="#top"
+        href="/"
         aria-label="Roland Wayne，回到顶部"
         onClick={navigateTop}
       >
@@ -813,7 +845,7 @@ function Header({ activeSection }) {
           <a
             key={item.id}
             className={activeSection === item.id ? "active" : ""}
-            href={`#${item.id}`}
+            href="/"
             aria-current={activeSection === item.id ? "location" : undefined}
             onClick={(event) => navigate(event, item.id)}
           >
@@ -825,7 +857,7 @@ function Header({ activeSection }) {
       <div className="header-actions">
         <a
           className="header-contact"
-          href="#contacting"
+          href="/"
           aria-label="Contact Roland"
           onClick={(event) => navigate(event, "contacting")}
         >
@@ -847,7 +879,7 @@ function Header({ activeSection }) {
           <a
             key={item.id}
             className={activeSection === item.id ? "active" : ""}
-            href={`#${item.id}`}
+            href="/"
             onClick={(event) => navigate(event, item.id)}
           >
             {item.label}
@@ -868,7 +900,7 @@ function Header({ activeSection }) {
               aria-label="移动端页面导航"
             >
               {navItems.map((item) => (
-                <a key={item.id} href={`#${item.id}`} onClick={(event) => navigate(event, item.id)}>
+                <a key={item.id} href="/" onClick={(event) => navigate(event, item.id)}>
                   <span>{item.label}</span>
                   <ArrowRight size={17} />
                 </a>
@@ -1247,7 +1279,7 @@ function WritingSection() {
               <span>知识体系的构建</span>
               <span className="knowledge-heading-last">从真实问题开始<i aria-hidden="true">。</i></span>
             </h2>
-            <a href="https://www.rolandwayne.com/blog" target="_blank" rel="noreferrer">
+            <a href="/articles/">
               查看所有文章 <ArrowRight size={17} />
             </a>
           </div>
@@ -1323,15 +1355,79 @@ function SignalingSection() {
   );
 }
 
-function ArticleShelfHeading() {
+function FeaturedAustraliaSection() {
+  const [selectedId, setSelectedId] = useState(featuredAustraliaArticles[0].id);
+  const selectedArticle = featuredAustraliaArticles.find((article) => article.id === selectedId)
+    ?? featuredAustraliaArticles[0];
+  const formattedDate = new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(`${selectedArticle.date}T00:00:00+08:00`));
+
   return (
-    <section className="section article-shelf-heading" aria-label="Article">
-      <SectionHeading
-        title="Article"
-        kicker="Selected writing"
-        description="医学、健康、教育与 AI，围绕真实问题展开的长期写作。"
+    <div className="article-module-wrap" id="articles">
+      <section className="article-module-surface module-surface australia-feature" aria-labelledby="australia-feature-title">
+        <header className="australia-feature-heading">
+          <div>
+            <span>Selected writing / Australia</span>
+            <h2 id="australia-feature-title">澳洲观察</h2>
+          </div>
+          <p>从资源、公共政策到住房市场，用三篇长文拆解澳大利亚在 AI 时代面对的真实选择。</p>
+        </header>
+
+        <div className="australia-feature-layout">
+          <div className="australia-feature-list" role="list" aria-label="三篇澳洲精选文章">
+            {featuredAustraliaArticles.map((article) => (
+              <button
+                className={`australia-feature-item${article.id === selectedArticle.id ? " is-active" : ""}`}
+                type="button"
+                role="listitem"
+                aria-pressed={article.id === selectedArticle.id}
+                onClick={() => setSelectedId(article.id)}
+                key={article.id}
+              >
+                <span className="australia-feature-number">{article.number}</span>
+                <span className="australia-feature-item-copy">
+                  <small>{article.date.replaceAll("-", ".")} · {article.eyebrow}</small>
+                  <strong>{article.title}</strong>
+                </span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </button>
+            ))}
+          </div>
+
+          <article className="australia-feature-detail" key={selectedArticle.id}>
+            <div className="australia-feature-cover">
+              <img src={selectedArticle.cover} alt="" loading="lazy" />
+              <span>{selectedArticle.number} / Australia dossier</span>
+            </div>
+            <div className="australia-feature-detail-copy">
+              <p className="australia-feature-meta">{formattedDate} · {selectedArticle.eyebrow}</p>
+              <h3>{selectedArticle.title}</h3>
+              <p>{selectedArticle.description}</p>
+              <div className="australia-feature-tags" aria-label="文章主题">
+                {selectedArticle.tags.map((tag) => <span key={tag}>{tag}</span>)}
+              </div>
+              <a className="australia-feature-read cursor-target" href={selectedArticle.href}>
+                阅读全文 <ArrowRight size={17} />
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <footer className="australia-feature-footer">
+          <span>全部文章与完整写作书架</span>
+          <a href="/articles/">搜索所有文章 <ArrowRight size={17} /></a>
+        </footer>
+      </section>
+      <img
+        className="article-corner-cloud"
+        src="/assets/clouds/hero-cloud-tall.png"
+        alt=""
+        aria-hidden="true"
       />
-    </section>
+    </div>
   );
 }
 
@@ -1382,7 +1478,7 @@ function BuildingSection() {
 
           <a
             className="building-lane-action cursor-target"
-            href="#contacting"
+            href="/"
             onClick={(event) => handlePageSectionLink(event, "contacting")}
           >
             预约咨询 <ArrowRight size={17} />
@@ -1493,7 +1589,7 @@ function CollaboratingSection() {
             </div>
             <a
               className="cursor-target"
-              href="#contacting"
+              href="/"
               onClick={(event) => handlePageSectionLink(event, "contacting")}
             >
               洽谈合作 <ArrowRight size={15} />
@@ -1583,19 +1679,13 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    const navigateFromHistory = () => {
-      const id = window.location.hash.slice(1);
-      if (!id) return;
-      window.requestAnimationFrame(() => scrollToPageSection(id, { updateHash: false }));
-    };
-
-    navigateFromHistory();
-    window.addEventListener("hashchange", navigateFromHistory);
-    window.addEventListener("popstate", navigateFromHistory);
-    return () => {
-      window.removeEventListener("hashchange", navigateFromHistory);
-      window.removeEventListener("popstate", navigateFromHistory);
-    };
+    const legacySection = window.location.hash.slice(1);
+    const requestedSection = consumeHomeSection() || legacySection;
+    if (window.location.hash) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+    }
+    if (!requestedSection) return;
+    window.requestAnimationFrame(() => scrollToPageSection(requestedSection));
   }, []);
 
   useEffect(() => {
@@ -1624,13 +1714,23 @@ export function App() {
 
       <div className="site-shell">
         <SVGFollowerCursor />
-        <a className="skip-link" href="#main-content">跳到主要内容</a>
+        <a
+          className="skip-link"
+          href="/"
+          onClick={(event) => {
+            event.preventDefault();
+            scrollToPageSection("about");
+            document.getElementById("main-content")?.focus({ preventScroll: true });
+          }}
+        >
+          跳到主要内容
+        </a>
         <div ref={scrollProgressRef} className="scroll-progress" />
         <Header activeSection={activeSection} />
         <ViewportScrollbar />
 
         <div className="content-scroll-region" id="top">
-          <main className="main-content-shell" id="main-content">
+          <main className="main-content-shell" id="main-content" tabIndex="-1">
             <span className="corner-mark top" aria-hidden="true" />
             <span className="corner-mark bottom" aria-hidden="true" />
             <section className="hero-section module-surface" id="about">
@@ -1646,9 +1746,9 @@ export function App() {
                   昆士兰大学医学院博士候选人，在健康经济学、实施科学与 AI 系统实践之间，寻找更清晰、更可执行的答案。
                 </p>
                 <div className="hero-actions">
-                  <a className="primary-action" href="#articles" onClick={(event) => handlePageSectionLink(event, "articles")}>看文章 <ArrowRight size={16} /></a>
-                  <a className="secondary-action" href="#building" onClick={(event) => handlePageSectionLink(event, "building")}>看实践 <ArrowRight size={16} /></a>
-                  <a className="secondary-action" href="#collaborating" onClick={(event) => handlePageSectionLink(event, "collaborating")}>谈合作 <ArrowRight size={16} /></a>
+                  <a className="primary-action" href="/" onClick={(event) => handlePageSectionLink(event, "articles")}>看文章 <ArrowRight size={16} /></a>
+                  <a className="secondary-action" href="/" onClick={(event) => handlePageSectionLink(event, "building")}>看实践 <ArrowRight size={16} /></a>
+                  <a className="secondary-action" href="/" onClick={(event) => handlePageSectionLink(event, "collaborating")}>谈合作 <ArrowRight size={16} /></a>
                 </div>
                 <div className="hero-stats" aria-label="关键经历">
                   <div><UsersRound size={18} /><span>X 自媒体博主</span><strong>5.4万粉丝</strong></div>
@@ -1674,18 +1774,7 @@ export function App() {
             </section>
 
             <WritingSection />
-            <div className="article-module-wrap" id="articles">
-              <div className="article-module-surface module-surface">
-                <ArticleShelfHeading />
-                <EmbeddedBookshelf />
-              </div>
-              <img
-                className="article-corner-cloud"
-                src="/assets/clouds/hero-cloud-tall.png"
-                alt=""
-                aria-hidden="true"
-              />
-            </div>
+            <FeaturedAustraliaSection />
             <SignalingSection />
             <BuildingSection />
             <CollaboratingSection />
