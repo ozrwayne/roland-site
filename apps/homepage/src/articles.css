@@ -16,6 +16,7 @@ body.articles-route #root {
 
 .articles-index-page {
   min-height: 100vh;
+  container-type: inline-size;
   font-family: var(--serif-cjk);
 }
 
@@ -118,7 +119,7 @@ body.articles-route #root {
 }
 
 .articles-index-hero {
-  padding-bottom: clamp(34px, 4vw, 58px);
+  padding-bottom: clamp(12px, 1.5vw, 22px);
 }
 
 .articles-index-hero span {
@@ -142,7 +143,10 @@ body.articles-route #root {
 }
 
 .articles-bookshelf-stage {
-  margin-bottom: clamp(54px, 7vw, 94px);
+  width: 100cqw;
+  margin-right: calc(50% - 50cqw);
+  margin-bottom: clamp(22px, 3vw, 40px);
+  margin-left: calc(50% - 50cqw);
   overflow: hidden;
 }
 
@@ -205,18 +209,19 @@ body.articles-route #root {
 
 .articles-card {
   display: grid;
-  grid-template-columns: minmax(260px, 34%) minmax(0, 1fr);
+  grid-template-columns: minmax(240px, 32%) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(30px, 5vw, 78px);
-  min-height: 310px;
-  padding: clamp(30px, 4vw, 58px) 0;
+  gap: clamp(24px, 3.5vw, 52px);
+  min-height: 0;
+  padding: clamp(22px, 2.4vw, 34px) 0;
   border-bottom: 1px solid var(--line);
 }
 
 .articles-card-cover {
   display: grid;
   width: 100%;
-  height: clamp(220px, 25vw, 360px);
+  height: auto;
+  aspect-ratio: 16 / 9;
   place-items: center;
   overflow: hidden;
   background: rgba(235, 228, 214, 0.54);
@@ -225,7 +230,7 @@ body.articles-route #root {
 .articles-card-cover img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: fill;
 }
 
 .articles-card-cover > span {
@@ -371,7 +376,7 @@ body.articles-route #root {
   }
 
   .articles-index-hero {
-    padding-bottom: 30px;
+    padding-bottom: 14px;
   }
 
   .articles-index-hero h1 {
@@ -379,18 +384,18 @@ body.articles-route #root {
   }
 
   .articles-bookshelf-stage {
-    margin-inline: -16px;
+    margin-bottom: 20px;
   }
 
   .articles-card {
     grid-template-columns: 1fr;
-    gap: 22px;
+    gap: 16px;
     min-height: 0;
-    padding: 30px 0 38px;
+    padding: 24px 0 30px;
   }
 
   .articles-card-cover {
-    height: min(72vw, 310px);
+    height: auto;
   }
 
   .articles-card h3 {
