@@ -253,10 +253,16 @@ for (const article of articles) {
   await writeFile(target, html);
 }
 
-const articleSummaries = articles.map(({ html, sourceFile, ...article }) => ({
-  ...article,
-  href: `/blog/${encodeURIComponent(article.slug)}/`,
-}));
+const articleSummaries = articles
+  .map(({ html, sourceFile, ...article }) => ({
+    ...article,
+    href: `/blog/${encodeURIComponent(article.slug)}/`,
+  }))
+  .sort((first, second) => {
+    if (first.slug === "welcome") return -1;
+    if (second.slug === "welcome") return 1;
+    return Date.parse(second.pubDate) - Date.parse(first.pubDate);
+  });
 const { ArticlesIndexPage } = await vite.ssrLoadModule("/src/ArticlesIndexPage.jsx");
 const articlesIndexMarkup = renderToString(
   React.createElement(ArticlesIndexPage, { articles: articleSummaries }),

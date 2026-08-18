@@ -32,7 +32,7 @@
 ## Article 与文章库
 
 - 首页 `#articles` 保留 `Article` section 标题，并以三篇澳洲精选文章组成主从浏览 surface：左侧/上方为可选择目录，三篇目录下直接放“阅读所有文章”按钮；右侧详情固定为上方封面、下方简短介绍/主题/详情入口。不要把 section 标题替换成某个地区专题名，不要添加专题说明、标题下分隔线或底部 footer 文案/分隔线，也不要把右侧详情恢复成左右分栏。
-- `/articles/` 是独立 React 文章库，包含完整 `EmbeddedBookshelf` 与可搜索的 17 篇文章索引；搜索覆盖标题、摘要和主题，且必须保留键盘操作、清空和空结果状态。
+- `/articles/` 是独立 React 文章库：顶部沿用 `Article` 标题形式；书架区域只显示完整 `EmbeddedBookshelf`，不加外框、标题或说明；正文不画左右边界但保留响应式页边留白；搜索只显示一个独立搜索框。文章列表固定一行一篇，封面必须完整显示不得裁切；`welcome` 永远置顶，其余按 `pubDate` 从新到旧排列。搜索覆盖标题、摘要和主题，并保留键盘操作、结果计数、清空和空结果状态。
 - 书架唯一数据源是 `BookshelfApp.jsx` 的 `books`。每本书保留 front cover、top page edge、right page block、back cover、厚度和可读 DOM 标题；不能改成 flat cover card。
 - 书本本身保持轴对齐，倾斜只来自 rail/window 与整本书的等量反向旋转。右 page block 使用一个 `skewY` 矩形，不创建独立左 spine，也不改为四点 polygon。
 - 动画循环以一组完整书目的实测宽度为周期；保留响应式 clone 数、跨 set 单调 stacking、hover/focus 暂停和 reduced-motion。只有第一组进入 accessibility tree 与 tab order。
