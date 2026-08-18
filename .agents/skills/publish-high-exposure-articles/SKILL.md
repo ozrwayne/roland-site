@@ -28,7 +28,7 @@ never scrape X or invent missing content.
 
 Only numeric exposure strictly greater than 100,000 qualifies. Reject `待补读`,
 blank, rounded, or malformed values and rows without a status URL. Continue
-from the latest qualifying article already represented in `src/content/blog/`,
+from the latest qualifying article already represented in `content/blog/`,
 then sort remaining candidates by Beijing publication time, oldest first. If
 there is no candidate, make no changes and report a no-op. Stop on a missing
 ZIP, metadata disagreement, or unreadable media; never skip forward.
@@ -44,7 +44,7 @@ ZIP, metadata disagreement, or unreadable media; never skip forward.
      --root /Users/garylau/Work/rolandwayne --threshold 100000
    ```
 
-   The importer creates `src/content/blog/x-<status-id>.md`, copies archive
+   The importer creates `content/blog/x-<status-id>.md`, copies archive
    media to `public/images/blog/x-<status-id>/`, rewrites asset links, declares
    the cover in frontmatter, and leaves the source ZIP untouched.
 
@@ -69,10 +69,10 @@ reviewed article:
 ```bash
 python3 .agents/skills/publish-high-exposure-articles/scripts/add_article_to_bookshelf.py \
   --root /Users/garylau/Work/rolandwayne \
-  --article src/content/blog/x-<status-id>.md --dry-run
+  --article content/blog/x-<status-id>.md --dry-run
 python3 .agents/skills/publish-high-exposure-articles/scripts/add_article_to_bookshelf.py \
   --root /Users/garylau/Work/rolandwayne \
-  --article src/content/blog/x-<status-id>.md
+  --article content/blog/x-<status-id>.md
 ```
 
 The script must:
@@ -80,7 +80,7 @@ The script must:
 - append one sequential book to `apps/homepage/src/BookshelfApp.jsx`;
 - preserve the exact article title as live DOM text;
 - copy the article cover byte-for-byte to
-  `apps/homepage/public/assets/books/x-<status-id>.<ext>`;
+  `public/assets/books/x-<status-id>.<ext>`;
 - link the book to the production `/blog/x-<status-id>/` route;
 - derive the year from `pubDate`, the kicker from reviewed tags, and stable
   accent/thickness defaults from the slug;
@@ -115,10 +115,10 @@ failure; do not select a second article.
 For an explicitly authorized run, including the configured daily automation,
 stage only:
 
-- `src/content/blog/x-<status-id>.md`;
+- `content/blog/x-<status-id>.md`;
 - `public/images/blog/x-<status-id>/`;
 - `apps/homepage/src/BookshelfApp.jsx`;
-- `apps/homepage/public/assets/books/x-<status-id>.<ext>`.
+- `public/assets/books/x-<status-id>.<ext>`.
 
 Create one commit such as `content: publish x-<status-id> and shelf book`, then
 push only `main`. Never force-push, reset, broadly clean, delete source ZIPs, or

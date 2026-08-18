@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add one published Astro article to the React homepage bookshelf."""
+"""Add one published React article to the React homepage bookshelf."""
 
 from __future__ import annotations
 
@@ -91,11 +91,11 @@ def book_objects(source: str) -> tuple[int, int, list[dict[str, str]]]:
 
 def article_details(root: Path, article: Path) -> dict[str, object]:
     try:
-        relative = article.relative_to(root / "src/content/blog")
+        relative = article.relative_to(root / "content/blog")
     except ValueError:
-        fail("article must be inside src/content/blog")
+        fail("article must be inside content/blog")
     if relative.parent != Path(".") or article.suffix != ".md":
-        fail("article must be a top-level Markdown file in src/content/blog")
+        fail("article must be a top-level Markdown file in content/blog")
 
     slug = article.stem
     if not re.fullmatch(r"x-\d+", slug):
@@ -189,7 +189,7 @@ def main() -> int:
     cover_source = details["cover_source"]
     asset_name = f"{slug}{cover_source.suffix.lower()}"
     artwork = f"/assets/books/{asset_name}"
-    cover_target = root / "apps/homepage/public/assets/books" / asset_name
+    cover_target = root / "public/assets/books" / asset_name
     href = f"https://www.rolandwayne.com/blog/{slug}/"
     existing = next((item for item in objects if item.get("id") == slug), None)
     href_owner = next((item for item in objects if item.get("href") == href), None)

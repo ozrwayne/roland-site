@@ -1,5 +1,5 @@
 {
-	"main": "dist/_worker.js/index.js",
+	"main": "worker/index.js",
 	"name": "rolandwayne",
   "compatibility_date": "2026-02-21",
   "compatibility_flags": [
@@ -8,7 +8,9 @@
   ],
 	"assets": {
 		"binding": "ASSETS",
-		"directory": "./dist"
+		"directory": "./dist",
+		"not_found_handling": "404-page",
+		"run_worker_first": ["/api/*"]
 	},
 	"observability": {
     "enabled": true

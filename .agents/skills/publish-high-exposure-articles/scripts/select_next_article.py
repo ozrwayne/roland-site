@@ -97,7 +97,7 @@ def frontmatter_values(path: Path) -> dict[str, str]:
 def existing_articles(root: Path) -> tuple[set[str], set[str]]:
     titles: set[str] = set()
     source_urls: set[str] = set()
-    for path in (root / "src/content/blog").glob("*.md"):
+    for path in (root / "content/blog").glob("*.md"):
         values = frontmatter_values(path)
         if values.get("title"):
             titles.add(compact(values["title"]))

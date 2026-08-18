@@ -15,10 +15,8 @@ const paths = {
   app: join(homepageRoot, "src/BookshelfApp.jsx"),
   css: join(homepageRoot, "src/styles.css"),
   appEntry: join(homepageRoot, "src/App.jsx"),
-  homepageHtml: join(homepageRoot, "dist/client/index.html"),
   rootHtml: join(projectRoot, "dist/index.html"),
-  publicAssets: join(homepageRoot, "public/assets"),
-  homepageDistAssets: join(homepageRoot, "dist/client/assets"),
+  publicAssets: join(projectRoot, "public/assets"),
   rootDistAssets: join(projectRoot, "dist/assets"),
 };
 
@@ -35,11 +33,10 @@ if (errors.length) {
   process.exit(1);
 }
 
-const [app, css, appEntry, homepageHtml, rootHtml] = await Promise.all([
+const [app, css, appEntry, rootHtml] = await Promise.all([
   readFile(paths.app, "utf8"),
   readFile(paths.css, "utf8"),
   readFile(paths.appEntry, "utf8"),
-  readFile(paths.homepageHtml, "utf8"),
   readFile(paths.rootHtml, "utf8"),
 ]);
 
@@ -51,11 +48,7 @@ async function readBuiltJavaScript(assetDirectory) {
   return chunks.join("\n");
 }
 
-const [homepageJavaScript, rootJavaScript] = await Promise.all([
-  readBuiltJavaScript(paths.homepageDistAssets),
-  readBuiltJavaScript(paths.rootDistAssets),
-]);
-const homepageBuild = homepageHtml + homepageJavaScript;
+const rootJavaScript = await readBuiltJavaScript(paths.rootDistAssets);
 const rootBuild = rootHtml + rootJavaScript;
 
 const start = app.indexOf("export const books = [");
@@ -84,7 +77,7 @@ numbers.forEach((number, index) => {
 
 for (const asset of localAssets) {
   const relative = asset.replace(/^\/assets\//, "");
-  for (const [label, base] of [["public", paths.publicAssets], ["homepage dist", paths.homepageDistAssets], ["root dist", paths.rootDistAssets]]) {
+  for (const [label, base] of [["public", paths.publicAssets], ["root dist", paths.rootDistAssets]]) {
     try { await access(join(base, relative)); } catch { fail(`Missing ${label} asset: ${asset}`); }
   }
 }
@@ -102,17 +95,16 @@ if (pdfAssets.length) {
 }
 
 for (const title of titles) {
-  if (!homepageBuild.includes(title) || !rootBuild.includes(title)) fail(`Built output does not contain title: ${title}`);
+  if (!rootBuild.includes(title)) fail(`Built output does not contain title: ${title}`);
 }
 
-const outputStats = await Promise.all([stat(paths.homepageHtml), stat(paths.rootHtml)]);
+const outputStats = await stat(paths.rootHtml);
 const result = {
   ok: errors.length === 0,
   books: ids.length,
   pdfBooks: pdfAssets.length,
   localAssets: localAssets.length,
-  homepageHtmlBytes: outputStats[0].size,
-  rootHtmlBytes: outputStats[1].size,
+  rootHtmlBytes: outputStats.size,
   sourceSha256: createHash("sha256").update(app).digest("hex"),
   errors,
 };

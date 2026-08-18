@@ -5,7 +5,7 @@ description: Add a complete article, report, or PDF book to the live Roland Wayn
 
 # Add Bookshelf Book
 
-Work from `/Users/garylau/Work/rolandwayne`. The deployed bookshelf lives in `apps/homepage/` and is overlaid onto the Astro production `/` build.
+Work from `/Users/garylau/Work/rolandwayne`. The deployed bookshelf and article pages share the repository's React/Vite production build.
 
 ## Prepare
 
@@ -19,7 +19,7 @@ Work from `/Users/garylau/Work/rolandwayne`. The deployed bookshelf lives in `ap
 
 1. Add one entry to `apps/homepage/src/BookshelfApp.jsx` using the schema reference.
 2. Use the next sequential two-digit number and a unique stable ID.
-3. Put new cover/PDF assets in `apps/homepage/public/assets/books/`, except an approved shared brand asset already under `apps/homepage/public/assets/`.
+3. Put new cover/PDF assets in `public/assets/books/`, except an approved shared brand asset already under `public/assets/`.
 4. Keep exact title text in the DOM. Do not flatten the title into cover artwork.
 5. Add a dedicated cover variant only when the supplied visual direction cannot use the standard cover anatomy.
 6. For a production PDF, use its `/assets/books/*.pdf` URL and `_blank` semantics. Decode base64 only when the href actually begins with `data:application/pdf;base64,`; leave normal HTTP/static paths untouched.
@@ -43,13 +43,13 @@ npm run build
 node .agents/skills/add-bookshelf-book/scripts/validate-bookshelf.mjs
 ```
 
-The root build must finish the Astro article build, homepage Vite build, and homepage overlay. Require `dist/index.html` and `apps/homepage/dist/client/index.html`.
+The root build must finish the Vite homepage build and React article static generation. Require `dist/index.html` and at least one `dist/blog/<slug>/index.html`.
 
 For a PDF, compare copied and source checksums. If a separate self-contained HTML deliverable exists, also require one matching embedded PDF payload; do not assume the production Vite site embeds public assets.
 
 ## Local visual QA
 
-1. Start `npm run dev:homepage` yourself.
+1. Start `npm run dev` yourself.
 2. Use Browser at desktop and mobile sizes. Inspect the new book at rest and on hover/focus.
 3. Check title hierarchy, closed seams, parallel right-page edges, last-to-first overlap, no document overflow, and continuous motion.
 4. Confirm only the first set is keyboard reachable; all clones are hidden and untabbable.

@@ -15,7 +15,6 @@ import {
   Microscope,
   Network,
   PenTool,
-  Play,
   Quote,
   Sparkles,
   UsersRound,
@@ -29,7 +28,6 @@ const navItems = [
   { id: "about", label: "About" },
   { id: "articles", label: "Article" },
   { id: "signaling", label: "Signal" },
-  { id: "video", label: "Video" },
   { id: "building", label: "Building" },
   { id: "collaborating", label: "Collaboration" },
 ];
@@ -94,56 +92,6 @@ const handlePageSectionLink = (event, id, afterNavigate) => {
 
 const rolandAvatar = "/assets/roland-avatar-original.png";
 const rolandHeroPortrait = "/assets/roland-profile-library.png";
-const videoAsset = (name) => (typeof window !== "undefined" && window.location.protocol === "file:"
-  ? `./public/videos/${name}`
-  : `/videos/${name}`);
-
-const videos = [
-  {
-    title: "三个月，四万粉丝与 1.5 亿曝光",
-    subtitle: "X 内容增长 · 算法、长文与活人感",
-    duration: "3:29",
-    src: videoAsset("x-growth.mp4"),
-    poster: videoAsset("x-growth.jpg"),
-  },
-  {
-    title: "我的七万元生产力桌面",
-    subtitle: "设备与工作流 · 从本地模型到多屏协作",
-    duration: "3:09",
-    src: videoAsset("creator-workspace.mp4"),
-    poster: videoAsset("creator-workspace.jpg"),
-  },
-  {
-    title: "五个简单动作，让生病几率减半",
-    subtitle: "健康与医学 · 睡眠、力量与日常习惯",
-    duration: "0:46",
-    src: videoAsset("health-five-habits.mp4"),
-    poster: videoAsset("health-five-habits.jpg"),
-  },
-  {
-    title: "在中国，挣到一千万的三条路",
-    subtitle: "商业观察 · 服务不同规模的人群",
-    duration: "0:12",
-    src: videoAsset("three-paths.mp4"),
-    poster: videoAsset("three-paths.jpg"),
-  },
-  {
-    title: "失眠睡不着？两分钟哼歌入睡法",
-    subtitle: "睡眠与医学 · 从一氧化氮到副交感神经",
-    duration: "3:03",
-    src: videoAsset("humming-sleep.mp4"),
-    poster: videoAsset("humming-sleep.jpg"),
-  },
-  {
-    title: "《给阿嬷的情书》昆士兰州首映礼",
-    subtitle: "汕头新闻 · 布里斯班现场",
-    compactTitle: true,
-    duration: "2:19",
-    src: videoAsset("grandma-letter-premiere.mp4"),
-    poster: videoAsset("grandma-letter-premiere.jpg"),
-  },
-];
-
 const articleTopics = [
   { id: "health", label: "健康与医学" },
   { id: "research", label: "科研与工具" },
@@ -1387,95 +1335,6 @@ function ArticleShelfHeading() {
   );
 }
 
-function VideoSection() {
-  const [activeVideo, setActiveVideo] = useState(null);
-  const videoRefs = useRef(new Map());
-
-  const stopOtherVideos = (event, src) => {
-    document.querySelectorAll(".video-card video").forEach((video) => {
-      if (video !== event.currentTarget) video.pause();
-    });
-    setActiveVideo(src);
-    event.currentTarget.closest(".video-card")?.classList.add("is-playing");
-  };
-
-  const restoreVideoCover = (event) => {
-    event.currentTarget.closest(".video-card")?.classList.remove("is-playing");
-  };
-
-  const startVideo = (src) => {
-    const video = videoRefs.current.get(src);
-    if (!video) return;
-    setActiveVideo(src);
-    video.play();
-  };
-
-  const finishVideo = (event) => {
-    restoreVideoCover(event);
-    setActiveVideo(null);
-  };
-
-  return (
-    <section className="section video-section module-surface" id="video">
-      <img
-        className="section-cloud video-upper-cloud"
-        src="/assets/clouds/video-cloud-upper-right.png"
-        alt=""
-        aria-hidden="true"
-      />
-      <img
-        className="section-cloud video-lower-cloud"
-        src="/assets/clouds/video-cloud-lower-left.png"
-        alt=""
-        aria-hidden="true"
-      />
-      <SectionHeading
-        title="Video"
-        kicker="Selected recordings"
-        description="研究、实践与公共表达。"
-      />
-      <div className="video-grid">
-        {videos.map((video) => (
-          <article className="video-card" key={video.src}>
-            <div className="video-media">
-              <video
-                controls={activeVideo === video.src}
-                controlsList="nodownload"
-                playsInline
-                preload="metadata"
-                poster={video.poster}
-                aria-label={`播放：${video.title}`}
-                ref={(node) => {
-                  if (node) videoRefs.current.set(video.src, node);
-                  else videoRefs.current.delete(video.src);
-                }}
-                onPlay={(event) => stopOtherVideos(event, video.src)}
-                onPause={restoreVideoCover}
-                onEnded={finishVideo}
-              >
-                <source src={video.src} type="video/mp4" />
-              </video>
-              <button
-                type="button"
-                className="video-play-mark cursor-target"
-                aria-label={`播放：${video.title}`}
-                onClick={() => startVideo(video.src)}
-              >
-                <Play size={18} fill="currentColor" aria-hidden="true" />
-              </button>
-              <span className="video-duration">{video.duration}</span>
-            </div>
-            <div className={`video-copy${video.compactTitle ? " is-compact" : ""}`}>
-              <h3>{video.title}</h3>
-              <p>{video.subtitle}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function BuildingSection() {
   return (
     <section className="section building-section building-hub-section module-surface" id="building">
@@ -1828,7 +1687,6 @@ export function App() {
               />
             </div>
             <SignalingSection />
-            <VideoSection />
             <BuildingSection />
             <CollaboratingSection />
             <ContactSection />

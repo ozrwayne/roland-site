@@ -6,10 +6,10 @@
 |---|---|
 | Book data and React anatomy | `apps/homepage/src/BookshelfApp.jsx` |
 | Homepage book geometry and cover CSS | `apps/homepage/src/styles.css` |
-| Cover/PDF assets | `apps/homepage/public/assets/books/` |
+| Cover/PDF assets | `public/assets/books/` |
 | Homepage entry | `apps/homepage/src/App.jsx` |
 | Homepage package build | `apps/homepage/package.json` |
-| Root production build/overlay | `package.json`, `scripts/overlay-homepage.mjs` |
+| Root production build and React SSG | `package.json`, `scripts/generate-react-site.mjs` |
 
 `App.jsx` renders `EmbeddedBookshelf` inside the `Article` surface. `BookshelfApp.jsx` exports one `books` array consumed by that production rail.
 
@@ -51,7 +51,7 @@ Keep the exact title as DOM text in every variant.
 - Preserve supplied PDFs byte-for-byte; copy rather than re-export.
 - Use lowercase stable filenames without spaces.
 - Production public assets remain static files. Vite does not automatically convert `/assets/...` strings to data URLs.
-- Confirm the built asset exists under both `apps/homepage/dist/client/assets/` and root `dist/assets/` after overlay.
+- Confirm the built asset exists under root `dist/assets/` after the production build.
 
 ## PDF navigation
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import the next eligible X article from its local archive into the Astro site.
+"""Import the next eligible X article from its local archive into the React site.
 
 The script is deliberately deterministic: selection is delegated to
 ``select_next_article.py`` and the source ZIP is never modified.  Use
@@ -107,7 +107,7 @@ def archive_files(archive: Path, expected_title: str, expected_source_url: str) 
 
 
 def rewrite_markdown(markdown: str, slug: str) -> str:
-    # The cover is rendered by BlogPost.astro; keeping the leading cover image
+    # The cover is rendered by ArticlePage.jsx; keeping the leading cover image
     # would show it twice on every article page.
     markdown = re.sub(r"^\s*!\[[^\]]*\]\((?:\./)?assets/cover\.[^\)]+\)\s*\n+", "", markdown, count=1)
     return ASSET_RE.sub(lambda match: f"![{match.group(1)}](/images/blog/{slug}/{match.group(1)})", markdown)
@@ -159,7 +159,7 @@ def main() -> int:
         raise SystemExit(f"archive missing for candidate: {candidate['title']}")
     archive = root / str(archive_relative)
     slug = slug_for(str(candidate["status_id"]))
-    target_markdown = root / "src/content/blog" / f"{slug}.md"
+    target_markdown = root / "content/blog" / f"{slug}.md"
     target_assets = root / "public/images/blog" / slug
     if target_markdown.exists() or target_assets.exists():
         raise SystemExit(f"refusing to overwrite existing import target: {slug}")
