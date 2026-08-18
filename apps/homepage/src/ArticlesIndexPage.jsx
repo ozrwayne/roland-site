@@ -34,17 +34,24 @@ const formatDate = (value) => new Intl.DateTimeFormat("zh-CN", {
 
 const normalize = (value) => value.toLocaleLowerCase("zh-CN").replace(/\s+/g, "");
 
+const byPinnedThenNewest = (first, second) => {
+  if (first.slug === "welcome") return -1;
+  if (second.slug === "welcome") return 1;
+  return Date.parse(second.pubDate) - Date.parse(first.pubDate);
+};
+
 export function ArticlesIndexPage({ articles }) {
   const [query, setQuery] = useState("");
+  const orderedArticles = useMemo(() => [...articles].sort(byPinnedThenNewest), [articles]);
   const filteredArticles = useMemo(() => {
     const needle = normalize(query.trim());
-    if (!needle) return articles;
-    return articles.filter((article) => normalize([
+    if (!needle) return orderedArticles;
+    return orderedArticles.filter((article) => normalize([
       article.title,
       article.description,
       ...(article.tags || []),
     ].join(" ")).includes(needle));
-  }, [articles, query]);
+  }, [orderedArticles, query]);
 
   return (
     <div className="articles-index-page">
@@ -73,30 +80,16 @@ export function ArticlesIndexPage({ articles }) {
 
       <main>
         <section className="articles-index-hero">
-          <div>
-            <span>Roland Wayne / Writing archive</span>
-            <h1>所有文章</h1>
-          </div>
-          <p>医学、健康经济学、澳大利亚、教育与 AI。用搜索找到问题，也可以从完整书架开始浏览。</p>
+          <span>Roland Wayne / Writing archive</span>
+          <h1>Article</h1>
         </section>
 
-        <section className="articles-bookshelf-stage" aria-labelledby="writing-series-title">
-          <header>
-            <div>
-              <span>Writing series</span>
-              <h2 id="writing-series-title">完整写作书架</h2>
-            </div>
-            <p>悬停或键盘聚焦一本书，打开对应文章或报告。</p>
-          </header>
+        <section className="articles-bookshelf-stage" aria-label="文章书架">
           <EmbeddedBookshelf />
         </section>
 
-        <section className="articles-search-section" id="all-articles" tabIndex="-1" aria-labelledby="article-index-title">
-          <header className="articles-search-header">
-            <div>
-              <span>Searchable index</span>
-              <h2 id="article-index-title">文章索引</h2>
-            </div>
+        <section className="articles-search-section" id="all-articles" tabIndex="-1" aria-label="全部文章">
+          <div className="articles-search-toolbar">
             <label className="articles-search-box">
               <Search size={19} aria-hidden="true" />
               <span className="sr-only">搜索文章</span>
@@ -107,11 +100,10 @@ export function ArticlesIndexPage({ articles }) {
                 onChange={(event) => setQuery(event.target.value)}
               />
             </label>
-          </header>
-
-          <p className="articles-result-count" aria-live="polite">
-            {query ? `找到 ${filteredArticles.length} 篇` : `共 ${articles.length} 篇`}
-          </p>
+            <p className="articles-result-count" aria-live="polite">
+              {query ? `找到 ${filteredArticles.length} 篇` : `共 ${articles.length} 篇`}
+            </p>
+          </div>
 
           {filteredArticles.length > 0 ? (
             <div className="articles-card-grid">
