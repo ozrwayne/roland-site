@@ -179,6 +179,18 @@ export const books = [
     format: "pdf",
     cover: "wis",
   },
+  {
+    id: "x-2044403611573354658",
+    number: "14",
+    title: "中年男人为什么伟哥越吃越没效果",
+    kicker: "男性健康 / 勃起功能障碍",
+    year: "2026",
+    artwork: "/assets/books/x-2044403611573354658.jpg",
+    tone: "dark",
+    accent: "#b64f36",
+    thickness: 27,
+    href: "https://www.rolandwayne.com/blog/x-2044403611573354658/",
+  },
 ];
 
 export function Book({ book, clone, stack, onActivate, onDeactivate }) {
