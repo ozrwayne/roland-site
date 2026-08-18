@@ -928,7 +928,6 @@ img {
 
 .australia-feature-heading {
   padding-bottom: clamp(30px, 3.6vw, 52px);
-  border-bottom: 1px solid rgba(166, 75, 52, 0.3);
 }
 
 .australia-feature-heading span {
