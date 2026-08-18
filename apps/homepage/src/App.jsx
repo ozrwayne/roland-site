@@ -124,6 +124,12 @@ const featuredAustraliaArticles = [
     tags: ["澳大利亚", "房地产", "利率"],
   },
 ];
+
+const featuredArticleDateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 const articleTopics = [
   { id: "health", label: "健康与医学" },
   { id: "research", label: "科研与工具" },
@@ -1364,11 +1370,6 @@ function FeaturedAustraliaSection() {
   const detailActionRef = useRef(null);
   const selectedArticle = featuredAustraliaArticles.find((article) => article.id === selectedId)
     ?? featuredAustraliaArticles[0];
-  const formattedDate = new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(`${selectedArticle.date}T00:00:00+08:00`));
 
   useLayoutEffect(() => {
     const heading = headingRef.current;
@@ -1390,6 +1391,7 @@ function FeaturedAustraliaSection() {
         if (!desktopQuery.matches) {
           detailSlot.dataset.alignOffset = "0";
           detailSlot.style.setProperty("--detail-align-offset", "0px");
+          detailSlot.style.removeProperty("--detail-card-height");
           detailSlot.style.removeProperty("--detail-cover-height");
           return;
         }
@@ -1398,19 +1400,22 @@ function FeaturedAustraliaSection() {
         const headingRect = heading.getBoundingClientRect();
         const directoryActionRect = directoryAction.getBoundingClientRect();
         const detailSlotRect = detailSlot.getBoundingClientRect();
-        const detailCoverRect = detailCover.getBoundingClientRect();
+        const detailRect = detailSlot.firstElementChild.getBoundingClientRect();
         const detailActionRect = detailAction.getBoundingClientRect();
         const naturalDetailTop = detailSlotRect.top - currentOffset;
-        const contentBelowCover = detailActionRect.bottom
-          - detailSlotRect.top
-          - detailCoverRect.height;
+        const detailBottomInset = detailRect.bottom - detailActionRect.bottom;
         const nextOffset = headingRect.top - naturalDetailTop;
-        const nextCoverHeight = directoryActionRect.bottom
+        const nextDetailHeight = directoryActionRect.bottom
           - headingRect.top
-          - contentBelowCover;
+          + detailBottomInset;
+        const nextCoverHeight = Math.min(
+          390,
+          Math.max(260, nextDetailHeight * 0.434),
+        );
 
         detailSlot.dataset.alignOffset = String(nextOffset);
         detailSlot.style.setProperty("--detail-align-offset", `${nextOffset}px`);
+        detailSlot.style.setProperty("--detail-card-height", `${nextDetailHeight}px`);
         detailSlot.style.setProperty("--detail-cover-height", `${nextCoverHeight}px`);
       });
     };
@@ -1431,7 +1436,7 @@ function FeaturedAustraliaSection() {
       desktopQuery.removeEventListener("change", alignActions);
       window.removeEventListener("resize", alignActions);
     };
-  }, [selectedId]);
+  }, []);
 
   return (
     <div className="article-module-wrap" id="articles">
@@ -1470,25 +1475,51 @@ function FeaturedAustraliaSection() {
           </div>
 
           <div className="australia-feature-detail-slot" ref={detailSlotRef}>
-            <article className="australia-feature-detail" key={selectedArticle.id}>
+            <article className="australia-feature-detail">
               <div className="australia-feature-cover" ref={detailCoverRef}>
-                <img src={selectedArticle.cover} alt="" loading="lazy" />
+                {featuredAustraliaArticles.map((article) => (
+                  <img
+                    className={article.id === selectedArticle.id ? "is-active" : ""}
+                    src={article.cover}
+                    alt=""
+                    loading="eager"
+                    decoding="async"
+                    aria-hidden="true"
+                    key={article.id}
+                  />
+                ))}
                 <span>{selectedArticle.number} / Australia dossier</span>
               </div>
-              <div className="australia-feature-detail-copy">
-                <p className="australia-feature-meta">{formattedDate} · {selectedArticle.eyebrow}</p>
-                <h3>{selectedArticle.title}</h3>
-                <p>{selectedArticle.description}</p>
-                <div className="australia-feature-tags" aria-label="文章主题">
-                  {selectedArticle.tags.map((tag) => <span key={tag}>{tag}</span>)}
-                </div>
-                <a
-                  className="australia-feature-read cursor-target"
-                  href={selectedArticle.href}
-                  ref={detailActionRef}
-                >
-                  阅读全文 <ArrowRight size={17} />
-                </a>
+              <div className="australia-feature-detail-copy-stack" aria-live="polite">
+                {featuredAustraliaArticles.map((article, index) => {
+                  const isActive = article.id === selectedArticle.id;
+                  const formattedDate = featuredArticleDateFormatter.format(
+                    new Date(`${article.date}T00:00:00+08:00`),
+                  );
+
+                  return (
+                    <div
+                      className={`australia-feature-detail-copy${isActive ? " is-active" : ""}`}
+                      aria-hidden={!isActive}
+                      key={article.id}
+                    >
+                      <p className="australia-feature-meta">{formattedDate} · {article.eyebrow}</p>
+                      <h3>{article.title}</h3>
+                      <p>{article.description}</p>
+                      <div className="australia-feature-tags" aria-label="文章主题">
+                        {article.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                      <a
+                        className="australia-feature-read cursor-target"
+                        href={article.href}
+                        ref={index === 0 ? detailActionRef : undefined}
+                        tabIndex={isActive ? 0 : -1}
+                      >
+                        阅读全文 <ArrowRight size={17} />
+                      </a>
+                    </div>
+                  );
+                })}
               </div>
             </article>
           </div>
