@@ -205,6 +205,18 @@ export const books = [
     href: "https://www.rolandwayne.com/blog/x-2045850686513140191/",
     cover: "artwork-title",
   },
+  {
+    id: "x-2049109111456055587",
+    number: "16",
+    title: "为什么住院 14 天必须出院",
+    kicker: "DRG / 医保支付",
+    year: "2026",
+    artwork: "/assets/books/x-2049109111456055587.png",
+    tone: "light",
+    accent: "#536b91",
+    thickness: 30,
+    href: "https://www.rolandwayne.com/blog/x-2049109111456055587/",
+  },
 ];
 
 export function Book({ book, clone, stack, onActivate, onDeactivate }) {
