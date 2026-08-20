@@ -13,13 +13,14 @@ Work from `/Users/garylau/Work/rolandwayne`. The deployed `/articles/` bookshelf
 2. Inspect `git status`; preserve unrelated work.
 3. Read [references/book-schema.md](references/book-schema.md).
 4. Resolve the exact title, target, content type, cover direction, source URL/file, and factual metadata. Never invent article facts.
-5. For PDFs, invoke the PDF skill, inspect the source, preserve its bytes, and record SHA-256 before copying. For generated or edited artwork, invoke the appropriate image/design skill.
+5. For PDFs, invoke the PDF skill, inspect the source, preserve its bytes, and record SHA-256 before copying.
+6. Every new raster book cover must use the source cover or closest supplied visual as a reference and invoke the `imagegen` skill with GPT Image 2 in image-to-image mode. Inspect the reference with `view_image`, inspect the generated result, and copy the selected output from `$CODEX_HOME/generated_images/` into the project. If GPT Image 2 or image-to-image generation is unavailable, stop. Cropping, resizing, stretching, direct copying, CSS-only treatment, or another generator is not an acceptable substitute.
 
 ## Add the book
 
 1. Add one entry to `apps/homepage/src/BookshelfApp.jsx` using the schema reference.
 2. Use the next sequential two-digit number and a unique stable ID.
-3. Put new cover/PDF assets in `public/assets/books/`, except an approved shared brand asset already under `public/assets/`.
+3. Put the generated cover and any PDF assets in `public/assets/books/`, except an approved shared brand asset already under `public/assets/`. The generated cover must differ in both path and bytes from its reference image.
 4. Keep exact title text in the DOM. Do not flatten the title into cover artwork.
 5. Add a dedicated cover variant only when the supplied visual direction cannot use the standard cover anatomy.
 6. For a production PDF, use its `/assets/books/*.pdf` URL and `_blank` semantics. Decode base64 only when the href actually begins with `data:application/pdf;base64,`; leave normal HTTP/static paths untouched.
@@ -70,4 +71,4 @@ Do not deploy, push, change DNS, edit production content, upload files, or submi
 
 ## Report
 
-Report the files changed, book/assets added, build and validator results, live URLs tested, any production mismatch, and whether any external write occurred.
+Report the files changed, GPT Image 2 prompt/mode, generated cover path, book/assets added, build and validator results, live URLs tested, any production mismatch, and whether any external write occurred.

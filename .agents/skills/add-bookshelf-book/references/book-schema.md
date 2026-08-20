@@ -48,6 +48,11 @@ Keep the exact title as DOM text in every variant.
 ## Asset rules
 
 - Prefer WebP for raster covers.
+- Every new raster shelf cover must be newly generated with GPT Image 2 in
+  image-to-image mode from the article/source cover or closest supplied visual.
+  The final asset must differ from the reference in path and bytes. A crop,
+  resize, stretch, direct copy, CSS-only treatment, or different generator does
+  not satisfy this requirement.
 - Preserve supplied PDFs byte-for-byte; copy rather than re-export.
 - Use lowercase stable filenames without spaces.
 - Production public assets remain static files. Vite does not automatically convert `/assets/...` strings to data URLs.

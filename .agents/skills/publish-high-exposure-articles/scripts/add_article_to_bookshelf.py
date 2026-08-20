@@ -8,6 +8,7 @@ import ast
 import hashlib
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -26,6 +27,7 @@ ACCENTS = (
     "#8a4f68",
     "#66733f",
 )
+RASTER_SUFFIXES = {".avif", ".jpeg", ".jpg", ".png", ".webp"}
 
 
 def fail(message: str) -> "NoReturn":
@@ -166,10 +168,31 @@ def render_entry(details: dict[str, object], number: str, artwork: str, args: ar
     )
 
 
+def resolve_generated_cover(root: Path, value: Path | None, article_cover: Path) -> Path:
+    if value is None:
+        fail("a new bookshelf book requires --generated-cover from GPT Image 2 image-to-image generation")
+    generated = value if value.is_absolute() else root / value
+    generated = generated.resolve()
+    if not generated.is_file():
+        fail(f"generated bookshelf cover does not exist: {generated}")
+    if generated.suffix.lower() not in RASTER_SUFFIXES:
+        fail(f"generated bookshelf cover must be a raster image: {generated}")
+    if generated == article_cover.resolve():
+        fail("generated bookshelf cover must not reuse the article cover path")
+    if generated.read_bytes() == article_cover.read_bytes():
+        fail("generated bookshelf cover must not reuse the article cover bytes")
+    return generated
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--article", type=Path, required=True)
+    parser.add_argument(
+        "--generated-cover",
+        type=Path,
+        help="Project-local GPT Image 2 image-to-image output used as the shelf cover",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--kicker", help="Cover category label; defaults to the first two article tags")
     parser.add_argument("--tone", choices=("light", "dark"), default="light", help="Cover text tone")
@@ -187,9 +210,6 @@ def main() -> int:
 
     slug = str(details["slug"])
     cover_source = details["cover_source"]
-    asset_name = f"{slug}{cover_source.suffix.lower()}"
-    artwork = f"/assets/books/{asset_name}"
-    cover_target = root / "public/assets/books" / asset_name
     href = f"https://www.rolandwayne.com/blog/{slug}/"
     existing = next((item for item in objects if item.get("id") == slug), None)
     href_owner = next((item for item in objects if item.get("href") == href), None)
@@ -197,21 +217,32 @@ def main() -> int:
     if existing or href_owner:
         if existing != href_owner or not existing:
             fail("book ID or href collides with a different bookshelf entry")
-        expected = {
-            "title": str(details["title"]),
-            "artwork": artwork,
-            "href": href,
-        }
+        artwork = existing.get("artwork", "")
+        expected_prefix = f"/assets/books/{slug}."
+        if not artwork.startswith(expected_prefix):
+            fail("existing bookshelf entry does not use the expected generated cover path")
+        cover_target = root / "public" / artwork.lstrip("/")
+        expected = {"title": str(details["title"]), "href": href}
         mismatches = [key for key, value in expected.items() if existing.get(key) != value]
         if mismatches:
             fail(f"existing bookshelf entry disagrees on: {', '.join(mismatches)}")
-        if not cover_target.is_file() or cover_target.read_bytes() != cover_source.read_bytes():
-            fail("existing bookshelf cover is missing or differs from the article cover")
+        if not cover_target.is_file():
+            fail("existing generated bookshelf cover is missing")
+        if cover_target.read_bytes() == cover_source.read_bytes():
+            fail("existing bookshelf cover is only a copy of the article cover")
+        if args.generated_cover is not None:
+            generated_cover = resolve_generated_cover(root, args.generated_cover, cover_source)
+            if cover_target.read_bytes() != generated_cover.read_bytes():
+                fail("existing bookshelf cover differs from --generated-cover")
         result = {"status": "already_present", "slug": slug, "number": existing["number"], "artwork": artwork}
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
 
-    if cover_target.exists() and cover_target.read_bytes() != cover_source.read_bytes():
+    generated_cover = resolve_generated_cover(root, args.generated_cover, cover_source)
+    asset_name = f"{slug}{generated_cover.suffix.lower()}"
+    artwork = f"/assets/books/{asset_name}"
+    cover_target = root / "public/assets/books" / asset_name
+    if cover_target.exists() and cover_target.read_bytes() != generated_cover.read_bytes():
         fail(f"refusing to overwrite a different bookshelf cover: {cover_target}")
 
     number = str(len(objects) + 1).zfill(2)
@@ -225,12 +256,13 @@ def main() -> int:
         "artwork": artwork,
         "href": href,
         "source_cover": str(cover_source.relative_to(root)),
-        "copied_cover": str(cover_target.relative_to(root)),
+        "generated_cover": str(generated_cover),
+        "shelf_cover": str(cover_target.relative_to(root)),
     }
     if not args.dry_run:
         cover_target.parent.mkdir(parents=True, exist_ok=True)
         if not cover_target.exists():
-            cover_target.write_bytes(cover_source.read_bytes())
+            shutil.copyfile(generated_cover, cover_target)
         bookshelf_path.write_text(updated, encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
