@@ -185,11 +185,12 @@ export const books = [
     title: "中年男人为什么伟哥越吃越没效果",
     kicker: "男性健康 / 勃起功能障碍",
     year: "2026",
-    artwork: "/assets/books/x-2044403611573354658.jpg",
+    artwork: "/assets/books/x-2044403611573354658-portrait.png",
     tone: "dark",
-    accent: "#b64f36",
+    accent: "#397fba",
     thickness: 27,
     href: "https://www.rolandwayne.com/blog/x-2044403611573354658/",
+    cover: "artwork-title",
   },
   {
     id: "x-2045850686513140191",
@@ -197,11 +198,12 @@ export const books = [
     title: "阳痿和早泄，到底是不是一回事？",
     kicker: "男性健康 / 勃起功能障碍",
     year: "2026",
-    artwork: "/assets/books/x-2045850686513140191.jpg",
+    artwork: "/assets/books/x-2045850686513140191-portrait.png",
     tone: "dark",
-    accent: "#536b91",
+    accent: "#b93128",
     thickness: 27,
     href: "https://www.rolandwayne.com/blog/x-2045850686513140191/",
+    cover: "artwork-title",
   },
 ];
 
@@ -234,6 +236,11 @@ export function Book({ book, clone, stack, onActivate, onDeactivate }) {
           <span className="book-cover book-cover--wis">
             <img className="wis-cover-logo" src={book.artwork} alt="" width="1334" height="375" />
             <strong className="wis-cover-title">{book.title}</strong>
+          </span>
+        ) : book.cover === "artwork-title" ? (
+          <span className="book-cover book-cover--artwork-title">
+            <img src={book.artwork} alt="" width="1024" height="1536" />
+            <span className="sr-only">{book.title}</span>
           </span>
         ) : (
           <span className="book-cover">
