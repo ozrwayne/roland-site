@@ -191,6 +191,18 @@ export const books = [
     thickness: 27,
     href: "https://www.rolandwayne.com/blog/x-2044403611573354658/",
   },
+  {
+    id: "x-2045850686513140191",
+    number: "15",
+    title: "阳痿和早泄，到底是不是一回事？",
+    kicker: "男性健康 / 勃起功能障碍",
+    year: "2026",
+    artwork: "/assets/books/x-2045850686513140191.jpg",
+    tone: "dark",
+    accent: "#536b91",
+    thickness: 27,
+    href: "https://www.rolandwayne.com/blog/x-2045850686513140191/",
+  },
 ];
 
 export function Book({ book, clone, stack, onActivate, onDeactivate }) {
