@@ -217,6 +217,18 @@ export const books = [
     thickness: 30,
     href: "https://www.rolandwayne.com/blog/x-2049109111456055587/",
   },
+  {
+    id: "x-2050050113142509886",
+    number: "17",
+    title: "企业 AI 转型，究竟该怎么做？",
+    kicker: "企业AI / 数字化转型",
+    year: "2026",
+    artwork: "/assets/books/x-2050050113142509886.png",
+    tone: "light",
+    accent: "#66733f",
+    thickness: 22,
+    href: "https://www.rolandwayne.com/blog/x-2050050113142509886/",
+  },
 ];
 
 export function Book({ book, clone, stack, onActivate, onDeactivate }) {
