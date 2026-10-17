@@ -280,6 +280,36 @@ const articlesIndexHtml = `<!doctype html>
 await mkdir(join(distRoot, "articles"), { recursive: true });
 await writeFile(join(distRoot, "articles", "index.html"), articlesIndexHtml);
 
+// Homepage: the React app mounts with createRoot (client-only), so give crawlers
+// a static intro inside #root plus Person/WebSite JSON-LD. createRoot clears this
+// markup on first render, so the visual design is unchanged once JS runs.
+const homepageFeatured = [
+  ["australia-2026", "AI、矿产与澳洲经济：2026，澳洲能迎来新国运吗？"],
+  ["ndis-australia-ai-future", "NDIS正在摧毁澳洲AI时代的新国运"],
+  ["australia-housing-market-2026", "写在澳大利亚房地产市场崩溃的前夜"],
+];
+const homepageIntro = `<main class="static-intro" style="max-width:42rem;margin:12vh auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.7">
+      <h1>Roland Wayne</h1>
+      <p>研究员｜系统构建者｜跨界思考者</p>
+      <p>昆士兰大学医学院博士候选人（澳洲博士，全额奖学金），研究处于健康经济学与实施科学的交叉领域，关注如何把循证干预转化为现实世界的健康成果，并在 AI 系统实践中寻找更清晰、更可执行的答案。</p>
+      <p>创办 <a href="https://www.wayneinsightspring.com/">Wayne InsightSpring</a>（企业 AI 转型咨询）与 <a href="https://medflowedu.com/">MedFlow</a>（医学留学与国际医学院申请指导，覆盖澳洲、英国与香港），也开设 AI 研究思维课程，带领团队在真实医学科研场景中应用 AI 工具。</p>
+      <h2>精选文章</h2>
+      <ul>
+        ${homepageFeatured.map(([slug, title]) => `<li><a href="/blog/${slug}/">${escapeHtml(title)}</a></li>`).join("\n        ")}
+      </ul>
+      <p><a href="/articles/">阅读所有文章</a> · <a href="mailto:contact@rolandwayne.com">contact@rolandwayne.com</a></p>
+    </main>`;
+if (!baseHtml.includes('<div id="root"></div>')) {
+  throw new Error("Homepage #root placeholder was not found in dist/index.html");
+}
+const homepageHtml = baseHtml
+  .replace(
+    "</head>",
+    `  <script type="application/ld+json">${safeJson(personSchema)}</script>\n    <script type="application/ld+json">${safeJson(websiteSchema)}</script>\n  </head>`,
+  )
+  .replace('<div id="root"></div>', `<div id="root">${homepageIntro}</div>`);
+await writeFile(join(distRoot, "index.html"), homepageHtml);
+
 const sitemap = createSitemap(articles);
 await writeFile(join(distRoot, "sitemap-0.xml"), sitemap);
 await writeFile(
