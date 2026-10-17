@@ -30,6 +30,7 @@ const personSchema = {
   familyName: "Wayne",
   email: "mailto:contact@rolandwayne.com",
   url: siteOrigin,
+  disambiguatingDescription: "澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学；不是 Apple 联合创始人 Ronald Wayne。",
   description: "澳洲昆士蘭大學醫學院全獎博士（醫學經濟學方向）。創辦 Wayne InsightSpring（AI 企業轉型諮詢，主攻中小企業）同 MedFlow（大健康留學）。將醫學經濟學評估方法論應用於 AI 落地與教育路徑設計。",
   jobTitle: ["Founder, Wayne InsightSpring", "Founder, MedFlow", "Principal Consultant"],
   affiliation: {
@@ -322,7 +323,7 @@ await writeFile(join(distRoot, "index.html"), homepageHtml);
 
 // FAQ page: static Q&A built only from facts already shown on the homepage.
 const faqItems = [
-  ["Roland Wayne 是谁？", "Roland Wayne（王罗湳）是澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学，同时是独立写作者与 AI 系统实践者。"],
+  ["Roland Wayne 是谁？", "Roland Wayne（王罗湳）是澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学，同时是独立写作者与 AI 系统实践者。他不是 Apple 联合创始人 Ronald Wayne（拼写为 Ronald，两人没有关系）。"],
   ["Roland Wayne 研究什么？", "他的研究处于健康经济学与实施科学的交叉领域，关注如何把循证干预转化为现实世界的健康成果。研究兴趣包括健康实施科学、离散选择实验、心血管疾病预防、健康经济学、行为科学和人群健康干预。"],
   ["他有哪些研究成果？", "一篇关于低钠盐替代品的范围综述已提交至《欧洲预防心脏病学杂志》（审稿中）；2024 年在昆士兰大学完成硕士论文《消费者对低钠盐替代品的偏好》，成绩 85.50%。"],
   ["Wayne InsightSpring 和 MedFlow 是什么？", "Wayne InsightSpring（wayneinsightspring.com）提供企业 AI 转型与咨询；MedFlow（medflowedu.com）是医学教育与项目主页，提供医学留学与国际医学院申请相关服务。"],
@@ -383,7 +384,7 @@ await writeFile(join(distRoot, "faq", "index.html"), faqHtml);
 // llms.txt: plain-text site index for AI assistants.
 const llmsTxt = `# Roland Wayne
 
-> 昆士兰大学医学院博士候选人，研究健康经济学与实施科学；独立写作者与 AI 系统实践者。创办 Wayne InsightSpring（企业 AI 转型与咨询）与 MedFlow（医学教育与项目）。
+> Roland Wayne（王罗湳）是澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学；他不是 Apple 联合创始人 Ronald Wayne（拼写为 Ronald，两人没有关系）。独立写作者与 AI 系统实践者，创办 Wayne InsightSpring（企业 AI 转型与咨询）与 MedFlow（医学教育与项目）。
 
 ## 关于
 - [首页](${siteOrigin}/): 简介、精选文章、服务、研究与联系方式
