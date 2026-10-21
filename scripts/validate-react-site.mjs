@@ -22,6 +22,22 @@ await requireFile(join(distRoot, "sitemap-index.xml"), "sitemap index");
 await requireFile(join(distRoot, "sitemap-0.xml"), "sitemap body");
 await requireFile(join(distRoot, "404.html"), "404 page");
 await requireFile(join(projectRoot, "worker/index.js"), "Cloudflare Worker");
+await requireFile(join(distRoot, "llms.txt"), "llms.txt");
+await requireFile(join(distRoot, "robots.txt"), "robots.txt");
+await requireFile(join(distRoot, "faq/index.html"), "FAQ page");
+
+try {
+  const faq = await readFile(join(distRoot, "faq/index.html"), "utf8");
+  if (!faq.includes("FAQPage")) errors.push("FAQ page schema missing");
+  const sitemapBody = await readFile(join(distRoot, "sitemap-0.xml"), "utf8");
+  if (!sitemapBody.includes("/faq/")) errors.push("FAQ page missing from sitemap");
+  const robots = await readFile(join(distRoot, "robots.txt"), "utf8");
+  for (const bot of ["GPTBot", "OAI-SearchBot", "ClaudeBot", "PerplexityBot", "Google-Extended"]) {
+    if (!robots.includes(`User-agent: ${bot}`)) errors.push(`robots.txt missing ${bot}`);
+  }
+} catch {
+  // Missing output is reported above.
+}
 
 try {
   const articleIndex = await readFile(join(distRoot, "articles/index.html"), "utf8");

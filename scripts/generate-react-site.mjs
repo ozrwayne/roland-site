@@ -30,6 +30,7 @@ const personSchema = {
   familyName: "Wayne",
   email: "mailto:contact@rolandwayne.com",
   url: siteOrigin,
+  disambiguatingDescription: "澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学；不是 Apple 联合创始人 Ronald Wayne。",
   description: "澳洲昆士蘭大學醫學院全獎博士（醫學經濟學方向）。創辦 Wayne InsightSpring（AI 企業轉型諮詢，主攻中小企業）同 MedFlow（大健康留學）。將醫學經濟學評估方法論應用於 AI 落地與教育路徑設計。",
   jobTitle: ["Founder, Wayne InsightSpring", "Founder, MedFlow", "Principal Consultant"],
   affiliation: {
@@ -42,6 +43,15 @@ const personSchema = {
     "https://www.linkedin.com/in/roland-wayne-b3b179266",
     "https://orcid.org/0009-0002-4272-5854",
     "https://scholar.google.com/citations?user=ESmLe1MAAAAJ&hl=en",
+    // Profiles linked from the homepage Signal section (apps/homepage/src/App.jsx).
+    "https://github.com/ozrwayne",
+    "https://www.xiaohongshu.com/user/profile/63e38e54000000002702ae11",
+    "https://cchw.habs.uq.edu.au/profile/118/roland-wang",
+  ],
+  knowsAbout: ["健康经济学", "健康实施科学", "离散选择实验", "心血管疾病预防", "行为科学", "人群健康干预", "AI 科研"],
+  worksFor: [
+    { "@type": "Organization", name: "Wayne InsightSpring", url: "https://www.wayneinsightspring.com/" },
+    { "@type": "Organization", name: "MedFlow", url: "https://medflowedu.com/" },
   ],
 };
 
@@ -194,6 +204,7 @@ function createSitemap(articles) {
   const urls = [
     { loc: `${siteOrigin}/` },
     { loc: `${siteOrigin}/articles/` },
+    { loc: `${siteOrigin}/faq/` },
     ...articles.map((article) => ({
       loc: `${siteOrigin}/blog/${encodeURIComponent(article.slug)}/`,
       lastmod: (article.updatedDate || article.pubDate).slice(0, 10),
@@ -309,6 +320,89 @@ const homepageHtml = baseHtml
   )
   .replace('<div id="root"></div>', `<div id="root">${homepageIntro}</div>`);
 await writeFile(join(distRoot, "index.html"), homepageHtml);
+
+// FAQ page: static Q&A built only from facts already shown on the homepage.
+const faqItems = [
+  ["Roland Wayne 是谁？", "Roland Wayne（王罗湳）是澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学，同时是独立写作者与 AI 系统实践者。他不是 Apple 联合创始人 Ronald Wayne（拼写为 Ronald，两人没有关系）。"],
+  ["Roland Wayne 研究什么？", "他的研究处于健康经济学与实施科学的交叉领域，关注如何把循证干预转化为现实世界的健康成果。研究兴趣包括健康实施科学、离散选择实验、心血管疾病预防、健康经济学、行为科学和人群健康干预。"],
+  ["他有哪些研究成果？", "一篇关于低钠盐替代品的范围综述已提交至《欧洲预防心脏病学杂志》（审稿中）；2024 年在昆士兰大学完成硕士论文《消费者对低钠盐替代品的偏好》，成绩 85.50%。"],
+  ["Wayne InsightSpring 和 MedFlow 是什么？", "Wayne InsightSpring（wayneinsightspring.com）提供企业 AI 转型与咨询；MedFlow（medflowedu.com）是医学教育与项目主页，提供医学留学与国际医学院申请相关服务。"],
+  ["Roland Wayne 提供哪些服务？", "一是全方位申请指导：为家庭提供国际医学院申请的长期指导，覆盖澳大利亚、英国、香港等地区，包括战略规划、学校选择、申请审核、面试准备和录取后支持。二是 AI 研究思维课程：面向本科生与研究生，学习用 AI 工具开展学术研究、批判性思考和更严谨的决策。"],
+  ["他写哪些主题的文章？", "文章覆盖健康与医学、科研与工具、澳洲与政策、教育与成长等主题，全部文章见 https://www.rolandwayne.com/articles/。"],
+  ["如何联系 Roland Wayne？", "邮箱 contact@rolandwayne.com。适合沟通的方向：科研合作、国际医学教育、高校课程共建、AI 科研体系、知识管理与自动化工作流。"],
+];
+const faqCanonical = `${siteOrigin}/faq/`;
+const faqTitle = `常见问题：Roland Wayne 是谁 | ${siteName}`;
+const faqDescription = "关于 Roland Wayne 的常见问题：昆士兰大学医学院博士候选人，研究健康经济学与实施科学，创办 Wayne InsightSpring 与 MedFlow。";
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": `${faqCanonical}#faq`,
+  url: faqCanonical,
+  inLanguage: "zh-CN",
+  isPartOf: { "@id": `${siteOrigin}/#website` },
+  about: { "@id": `${siteOrigin}/#person` },
+  mainEntity: faqItems.map(([question, answer]) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: { "@type": "Answer", text: answer },
+  })),
+};
+const faqHtml = `<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f6f2" />
+    <meta name="robots" content="index, follow" />
+    <title>${escapeHtml(faqTitle)}</title>
+    <meta name="description" content="${escapeHtml(faqDescription)}" />
+    <link rel="canonical" href="${faqCanonical}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="${escapeHtml(faqTitle)}" />
+    <meta property="og:description" content="${escapeHtml(faqDescription)}" />
+    <meta property="og:url" content="${faqCanonical}" />
+    <meta property="og:site_name" content="${siteName}" />
+    <link rel="icon" type="image/png" href="/assets/roland-profile-library.png" />
+    <script type="application/ld+json">${safeJson(personSchema)}</script>
+    <script type="application/ld+json">${safeJson(websiteSchema)}</script>
+    <script type="application/ld+json">${safeJson(faqSchema)}</script>
+    <style>body{margin:0;background:#f7f6f2;color:#2b2925;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}main{max-width:44rem;margin:0 auto;padding:4rem 1.5rem}a{color:inherit}h2{font-size:1.15rem;margin:2.2rem 0 .4rem}nav{font-size:.95rem;margin-bottom:2rem}</style>
+  </head>
+  <body>
+    <main>
+      <nav><a href="/">← Roland Wayne 首页</a> · <a href="/articles/">所有文章</a></nav>
+      <h1>关于 Roland Wayne：常见问题</h1>
+      ${faqItems.map(([question, answer]) => `<section><h2>${escapeHtml(question)}</h2><p>${escapeHtml(answer)}</p></section>`).join("\n      ")}
+    </main>
+  </body>
+</html>
+`;
+await mkdir(join(distRoot, "faq"), { recursive: true });
+await writeFile(join(distRoot, "faq", "index.html"), faqHtml);
+
+// llms.txt: plain-text site index for AI assistants.
+const llmsTxt = `# Roland Wayne
+
+> Roland Wayne（王罗湳）是澳大利亚昆士兰大学医学院博士候选人，研究健康经济学与实施科学；他不是 Apple 联合创始人 Ronald Wayne（拼写为 Ronald，两人没有关系）。独立写作者与 AI 系统实践者，创办 Wayne InsightSpring（企业 AI 转型与咨询）与 MedFlow（医学教育与项目）。
+
+## 关于
+- [首页](${siteOrigin}/): 简介、精选文章、服务、研究与联系方式
+- [常见问题](${faqCanonical}): 身份、研究方向、研究成果、服务与联系方式的问答
+- 联系: contact@rolandwayne.com
+
+## 主页与身份
+- X: https://x.com/rwayne
+- GitHub: https://github.com/ozrwayne
+- 昆士兰大学研究人员主页: https://cchw.habs.uq.edu.au/profile/118/roland-wang
+- Wayne InsightSpring: https://www.wayneinsightspring.com/
+- MedFlow: https://medflowedu.com/
+
+## 文章
+- [所有文章](${siteOrigin}/articles/)
+${articleSummaries.map((article) => `- [${article.title}](${siteOrigin}${article.href})${article.description ? `: ${article.description}` : ""} (${String(article.pubDate).slice(0, 10)})`).join("\n")}
+`;
+await writeFile(join(distRoot, "llms.txt"), llmsTxt);
 
 const sitemap = createSitemap(articles);
 await writeFile(join(distRoot, "sitemap-0.xml"), sitemap);
